@@ -1,0 +1,33 @@
+# 目录说明
+
+# 旧版本原型文件（保留历史参考）
+mvp-app-v*.html
+!mvp-app-v13.html
+
+# 中间版本HTML
+habit-*.html
+habit-prototype*.html
+index.html
+
+# 开发辅助脚本
+*.py
+*.wsf
+check_*
+rebuild_*
+compare_*
+parse_*
+fix_*
+deep_*
+find_*
+test_*
+build_*
+
+# 设计文件
+figma-make/
+figma-make-code/
+svg/
+*.png
+
+# 系统文件
+.DS_Store
+Thumbs.db
