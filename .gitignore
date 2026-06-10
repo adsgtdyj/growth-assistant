@@ -1,5 +1,3 @@
-# 目录说明
-
 # 旧版本原型文件（保留历史参考）
 mvp-app-v*.html
 !mvp-app-v13.html
@@ -8,6 +6,7 @@ mvp-app-v*.html
 habit-*.html
 habit-prototype*.html
 index.html
+!public/index.html
 
 # 开发辅助脚本
 *.py
@@ -27,6 +26,16 @@ figma-make/
 figma-make-code/
 svg/
 *.png
+
+# 云端版本敏感和自动生成文件
+node_modules/
+.env
+.env.*
+.env-*
+!.env.example
+env.txt
+data/
+*.log
 
 # 系统文件
 .DS_Store
