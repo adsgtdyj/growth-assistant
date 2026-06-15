@@ -12,6 +12,7 @@
 <title>AI成长助理</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
+:root{--safe-bottom:env(safe-area-inset-bottom,0px);--tabbar-height:88px;--assistant-gap:8px}
 html,body{height:100%;overflow:hidden}
 body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 25%,#f093fb 50%,#f5576c 75%,#ffecd2 100%);background-size:400% 400%;animation:gradientShift 15s ease infinite;display:flex;justify-content:center;min-height:100vh;color:#1e293b}
 
@@ -242,7 +243,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .checkin-success .success-sub{font-size:14px;opacity:0.7;margin-top:20px}
 
 /* ===== 教练页 ===== */
-.assistant-page{display:flex;flex-direction:column;height:100%;background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%);padding-bottom:88px}
+.assistant-page{display:flex;flex-direction:column;height:calc(100% - var(--tabbar-height));min-height:0;background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%);padding-bottom:0}
 .assistant-header{padding:14px 24px 0;background:transparent}
 .assistant-header .ah-title{font-size:26px;font-weight:900;color:#1e293b;letter-spacing:-0.5px;background:linear-gradient(135deg,#6366f1,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:inline-block}
 .assistant-header .ah-sub{font-size:14px;color:#64748b;margin-top:6px;font-weight:500}
@@ -260,7 +261,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .quick-pill svg{width:19px;height:19px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
 /* 对话滚动区 */
-.assistant-scroll{flex:1;overflow-y:auto;padding:8px 0;-webkit-overflow-scrolling:touch}
+.assistant-scroll{flex:1;min-height:0;overflow-y:auto;padding:8px 0;-webkit-overflow-scrolling:touch}
 
 /* 日期分组 */
 .date-group{margin-bottom:12px}
@@ -270,8 +271,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .msg-item{padding:10px 24px;cursor:pointer;transition:all 0.2s ease;border-radius:16px;margin:0 16px}
 .msg-item:hover{background:rgba(99,102,241,0.05)}
 .msg-item:active{background:rgba(99,102,241,0.1)}
-.msg-user{font-size:14px;color:#6366f1;margin-bottom:8px;display:flex;align-items:center;gap:6px;font-weight:700}
-.msg-user svg{width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round}
+.msg-user{font-size:14px;color:#6366f1;margin-bottom:8px;display:flex;align-items:flex-start;gap:8px;font-weight:700}
+.msg-avatar{width:30px;height:30px;border-radius:50%;overflow:hidden;flex:0 0 30px;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#6366f1,#ec4899);box-shadow:0 4px 14px rgba(99,102,241,0.22)}
+.msg-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.msg-avatar svg{width:17px;height:17px;stroke:#fff;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.msg-user-text{flex:1;min-width:0;line-height:1.6;padding-top:3px}
 .msg-ai{background:linear-gradient(135deg,#fff,#f8fafc);border-radius:20px;padding:16px 20px;font-size:14px;color:#1e293b;line-height:1.8;white-space:pre-wrap;box-shadow:0 4px 20px rgba(0,0,0,0.06);border:1px solid rgba(255,255,255,0.8)}
 .msg-ai .msg-time{font-size:11px;color:#94a3b8;margin-top:10px;font-weight:600}
 .msg-ai .msg-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
@@ -280,15 +284,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .msg-action-btn:active{transform:scale(0.95)}
 
 /* AI输入栏 */
-.ai-input-bar{background:rgba(255,255,255,0.95);backdrop-filter:blur(24px);padding:12px 16px 20px;border-top:1px solid rgba(255,255,255,0.5);position:relative;z-index:50}
-.ai-input-row{display:flex;gap:12px;align-items:flex-end}
-.ai-input{flex:1;min-height:48px;max-height:86px;padding:13px 18px;border:2px solid #e2e8f0;border-radius:24px;font-size:15px;line-height:20px;outline:none;background:#f8fafc;transition:border-color 0.3s,background 0.3s,box-shadow 0.3s;font-weight:500;resize:none;overflow-y:hidden;font-family:inherit}
+.ai-input-bar{background:rgba(255,255,255,0.95);backdrop-filter:blur(24px);padding:12px 16px;border-top:1px solid rgba(255,255,255,0.5);position:relative;z-index:50;flex-shrink:0;margin-bottom:var(--assistant-gap)}
+.ai-input-row{display:flex;gap:10px;align-items:flex-end}
+.ai-input{flex:1;min-height:46px;max-height:86px;padding:12px 16px;border:2px solid #e2e8f0;border-radius:23px;font-size:15px;line-height:20px;outline:none;background:#f8fafc;transition:border-color 0.3s,background 0.3s,box-shadow 0.3s;font-weight:500;resize:none;overflow-y:hidden;font-family:inherit}
 .ai-input:focus{border-color:#6366f1;background:#fff;box-shadow:0 0 0 4px rgba(99,102,241,0.1)}
 .ai-input.scrollable{overflow-y:auto}
-.ai-send-btn{width:44px;height:44px;border-radius:22px;border:none;background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);background-size:200% 200%;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.3s;box-shadow:0 4px 16px rgba(99,102,241,0.35)}
+.ai-mode-btn,.ai-send-btn{width:44px;height:44px;border-radius:22px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.3s}
+.ai-mode-btn{background:#f8fafc;border:2px solid #e2e8f0;color:#6366f1;box-shadow:0 4px 14px rgba(99,102,241,0.12)}
+.ai-mode-btn:active{transform:scale(0.92);background:#eef2ff}
+.ai-mode-btn svg{width:20px;height:20px;stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ai-send-btn{background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);background-size:200% 200%;color:#fff;font-size:18px;box-shadow:0 4px 16px rgba(99,102,241,0.35)}
 .ai-send-btn:hover{transform:scale(1.1);animation:gradientShift 2s ease infinite}
 .ai-send-btn:active{transform:scale(0.9)}
 .ai-send-btn svg{width:20px;height:20px;stroke:#fff;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ai-voice-hold{display:none;flex:1;height:46px;border-radius:23px;border:2px solid #e2e8f0;background:#f8fafc;color:#475569;font-size:15px;font-weight:800;font-family:inherit;align-items:center;justify-content:center;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none;transition:all 0.2s;box-shadow:inset 0 1px 0 rgba(255,255,255,0.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 18px}
+.ai-voice-hold.recording{background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);border-color:transparent;color:#fff;transform:scale(0.98);box-shadow:0 8px 24px rgba(99,102,241,0.28)}
+.ai-voice-hold.canceling{background:#fee2e2;border-color:#fecaca;color:#b91c1c;box-shadow:0 8px 24px rgba(239,68,68,0.18)}
+.ai-input-row.voice-mode .ai-input,.ai-input-row.voice-mode .ai-send-btn{display:none}
+.ai-input-row.voice-mode .ai-voice-hold{display:flex}
 
 /* ===== 日历页 ===== */
 .calendar-page{padding:0;background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%);height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}
@@ -578,10 +591,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
   .phone-panel{padding:0;width:100%;height:100dvh}
   .phone-frame{width:100vw;height:100dvh;border-radius:0;border:none;box-shadow:none;animation:none;background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%)}
   .status-bar{height:calc(44px + env(safe-area-inset-top));padding-top:env(safe-area-inset-top)}
-  .tab-bar{border-radius:24px 24px 0 0;padding-bottom:max(10px,env(safe-area-inset-bottom))}
-  .fab-btn{bottom:calc(100px + env(safe-area-inset-bottom))}
-  .assistant-page{padding-bottom:calc(88px + env(safe-area-inset-bottom))}
-  .ai-input-bar{padding-bottom:max(20px,env(safe-area-inset-bottom))}
+  .tab-bar{height:var(--tabbar-height);border-radius:24px 24px 0 0;padding-bottom:max(10px,var(--safe-bottom))}
+  .fab-btn{bottom:calc(100px + var(--safe-bottom))}
+  .assistant-page{height:calc(100dvh - var(--tabbar-height));padding-bottom:0}
+  .ai-input-bar{padding-bottom:12px}
 }
 
 @media(display-mode:standalone){
@@ -728,9 +741,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
           <div id="aiHistoryArea"></div>
         </div>
         <div class="ai-input-bar">
-          <div class="ai-input-row">
-            <textarea class="ai-input" id="aiInput" rows="1" placeholder="问我任何关于习惯打卡的问题…" oninput="resizeAiInput()" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAiQuery()}"></textarea>
-            <button class="ai-send-btn" onclick="sendAiQuery()"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+          <div class="ai-input-row" id="aiInputRow">
+            <button class="ai-mode-btn" id="aiModeBtn" type="button" onclick="toggleAiInputMode()" aria-label="切换语音输入"></button>
+            <textarea class="ai-input" id="aiInput" rows="1" placeholder="问教练一句…" oninput="resizeAiInput()" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAiQuery()}"></textarea>
+            <button class="ai-voice-hold" id="aiVoiceHold" type="button">按住说话</button>
+            <button class="ai-send-btn" id="aiSendBtn" onclick="sendAiQuery()"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
           </div>
         </div>
       </div>
@@ -1049,7 +1064,9 @@ const ICON_PATHS = {
   medal:'<circle cx="12" cy="14" r="5"/><path d="M8 2h8l-2 7h-4z"/><path d="M8 2 6 8l4 1"/><path d="M16 2l2 6-4 1"/>',
   sparkle:'<path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/>',
   sunrise:'<path d="M17 18a5 5 0 0 0-10 0"/><path d="M12 2v6"/><path d="m4.2 10.2 1.4 1.4"/><path d="m18.4 11.6 1.4-1.4"/><path d="M2 18h20"/>',
-  arrow:'<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>'
+  arrow:'<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+  mic:'<path d="M12 2a4 4 0 0 1 4 4v6a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/><path d="M8 22h8"/>',
+  keyboard:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h.01"/><path d="M11 9h.01"/><path d="M15 9h.01"/><path d="M19 9h.01"/><path d="M7 13h.01"/><path d="M11 13h6"/><path d="M7 17h10"/>'
 };
 const LEGACY_ICON_MAP = {
   '\u{1F3CB}️':'fitness','\u{1F3CB}':'fitness','\u{1F4D6}':'book','\u{1F4DA}':'book','\u{1F4A7}':'water','\u{1F9D8}':'stretch','\u{1F3B5}':'music','✍️':'pen','✍':'pen','\u{1F319}':'moon','\u{1F34E}':'apple','\u{1F3C3}':'run','\u{1F3A8}':'palette','\u{1F4DD}':'note','\u{1F48A}':'pill','\u{1F33F}':'leaf','☀️':'sun','☀':'sun','\u{1F3AF}':'target','❤️':'heart','❤':'heart','\u{1F464}':'user','\u{1F525}':'flame','\u{1F916}':'bot','\u{1F4AC}':'message','⏰':'clock','✅':'check','⭐':'star','\u{1F3C5}':'medal','\u{1F3C6}':'award','\u{1F4A1}':'lightbulb'
@@ -1162,6 +1179,7 @@ function getDefaultData(){
       slogan: '产后恢复期，动作质量优先，稳定训练就赢了。',
       aiTone: 'sassy',
       fitnessProfile,
+      aiInputMode: 'text',
       reminderTimes: {fitness_training:'12:00',mobility_recovery:'21:30',sleep_recovery:'22:30',drink_water:'09:00'}
     },
     taskLogs: [
@@ -1321,6 +1339,7 @@ function normalizeAppData(){
   if(!appData.chatHistory) appData.chatHistory = [];
   if(!appData.settings) appData.settings = {};
   if(!appData.settings.aiTone) appData.settings.aiTone = 'sassy';
+  if(!appData.settings.aiInputMode) appData.settings.aiInputMode = 'text';
   if(!appData.settings.reminderTimes) appData.settings.reminderTimes = {};
   if(!appData.taskLogs) appData.taskLogs = [];
   if(!appData.aiPlans) appData.aiPlans = [];
@@ -1438,6 +1457,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   checkLoginAndLoad();
   hydrateStaticIcons();
   enableHorizontalDrag();
+  initAiInputMode();
   setInterval(updateStatusBarTime, 30000);
 
 
@@ -1754,6 +1774,7 @@ function renderAssistantPage(){
   }
   renderChatHistory();
   renderAiAdvice();
+  initAiInputMode();
 }
 
 function renderAiAdvice(){
@@ -1781,6 +1802,14 @@ function renderAiAdvice(){
     adviceText=pendings;
   }
   document.getElementById('aiAdviceText').textContent=adviceText;
+}
+
+function renderChatUserAvatar(){
+  const avatar=appData.settings && appData.settings.avatar;
+  if(avatar && avatar.startsWith('data:')){
+    return `<span class="msg-avatar"><img src="${escapeHtml(avatar)}" alt="我的头像"></span>`;
+  }
+  return `<span class="msg-avatar fallback">${iconSvg(avatar || 'user')}</span>`;
 }
 
 function renderChatHistory(){
@@ -1817,7 +1846,7 @@ function renderChatHistory(){
       const msgEl=document.createElement('div');
       msgEl.className='msg-item';
       if(msg.role==='user'){
-        msgEl.innerHTML=`<div class="msg-user">${iconSvg('user','msg-icon')} ${formatInlineIcons(msg.text)}</div>`;
+        msgEl.innerHTML=`<div class="msg-user">${renderChatUserAvatar()} <span class="msg-user-text">${formatInlineIcons(msg.text)}</span></div>`;
       } else {
         let actionsHtml='';
         if(msg.quick && msg.quick.length>0){
@@ -1923,6 +1952,16 @@ function quickModifyPlan(){
 }
 window.quickModifyPlan=quickModifyPlan;
 
+let aiRecognition = null;
+let aiVoiceText = '';
+let aiVoiceInterimText = '';
+let aiVoiceRecording = false;
+let aiVoiceShouldSend = false;
+let aiVoiceCanceled = false;
+let aiVoiceStartY = 0;
+let aiVoiceStartTime = 0;
+let aiVoiceTimer = null;
+
 function resizeAiInput(){
   const input=document.getElementById('aiInput');
   if(!input)return;
@@ -1931,6 +1970,197 @@ function resizeAiInput(){
   const nextHeight=Math.min(input.scrollHeight,maxHeight);
   input.style.height=nextHeight+'px';
   input.classList.toggle('scrollable',input.scrollHeight>maxHeight);
+}
+
+function getSpeechRecognitionCtor(){
+  return window.SpeechRecognition || window.webkitSpeechRecognition;
+}
+
+function showVoiceUnsupportedTip(){
+  showToast('Safari 请用键盘麦克风听写');
+}
+
+function initAiInputMode(){
+  if((appData.settings.aiInputMode || 'text')==='voice' && !getSpeechRecognitionCtor()){
+    appData.settings.aiInputMode='text';
+    saveData(appData,true);
+  }
+  applyAiInputMode(appData.settings.aiInputMode || 'text');
+  bindAiVoiceEvents();
+}
+
+function toggleAiInputMode(){
+  const current=appData.settings.aiInputMode || 'text';
+  const next=current==='voice'?'text':'voice';
+  if(next==='voice' && !getSpeechRecognitionCtor()){
+    showVoiceUnsupportedTip();
+    return;
+  }
+  appData.settings.aiInputMode=next;
+  saveData(appData,true);
+  applyAiInputMode(next);
+}
+
+function applyAiInputMode(mode){
+  const row=document.getElementById('aiInputRow');
+  const btn=document.getElementById('aiModeBtn');
+  const input=document.getElementById('aiInput');
+  if(!row || !btn)return;
+  const isVoice=mode==='voice';
+  row.classList.toggle('voice-mode',isVoice);
+  btn.innerHTML=iconSvg(isVoice?'keyboard':'mic');
+  btn.setAttribute('aria-label',isVoice?'切换文字输入':'切换语音输入');
+  btn.setAttribute('aria-pressed',isVoice?'true':'false');
+  if(!isVoice) setTimeout(()=>input && input.focus(),0);
+}
+
+function bindAiVoiceEvents(){
+  const btn=document.getElementById('aiVoiceHold');
+  if(!btn || btn.dataset.bound)return;
+  btn.dataset.bound='1';
+  btn.addEventListener('pointerdown',startAiVoiceRecording);
+  btn.addEventListener('pointermove',updateAiVoiceCancelState);
+  btn.addEventListener('pointerup',stopAiVoiceRecording);
+  btn.addEventListener('pointercancel',cancelAiVoiceRecording);
+  btn.addEventListener('pointerleave',e=>{if(aiVoiceRecording)stopAiVoiceRecording(e)});
+  btn.addEventListener('contextmenu',e=>e.preventDefault());
+}
+
+function resetAiVoiceButton(text='按住说话'){
+  const btn=document.getElementById('aiVoiceHold');
+  if(!btn)return;
+  btn.classList.remove('recording','canceling');
+  btn.textContent=text;
+}
+
+function stopAiVoiceTimer(){
+  clearInterval(aiVoiceTimer);
+  aiVoiceTimer=null;
+}
+
+function updateAiVoiceTimerText(){
+  if(aiVoiceCanceled)return;
+  const btn=document.getElementById('aiVoiceHold');
+  if(!btn)return;
+  const seconds=Math.max(1,Math.floor((Date.now()-aiVoiceStartTime)/1000));
+  btn.textContent=`正在说话 ${seconds} 秒，上滑取消`;
+}
+
+function updateAiVoiceCancelState(e){
+  if(!aiVoiceRecording)return;
+  const btn=document.getElementById('aiVoiceHold');
+  const shouldCancel=aiVoiceStartY-e.clientY>45;
+  aiVoiceCanceled=shouldCancel;
+  btn.classList.toggle('canceling',shouldCancel);
+  if(shouldCancel)btn.textContent='松开取消发送';
+  else updateAiVoiceTimerText();
+}
+
+function startAiVoiceRecording(e){
+  e.preventDefault();
+  if(aiVoiceRecording)return;
+  const Ctor=getSpeechRecognitionCtor();
+  if(!Ctor){
+    showVoiceUnsupportedTip();
+    return;
+  }
+  aiVoiceText='';
+  aiVoiceInterimText='';
+  aiVoiceShouldSend=false;
+  aiVoiceCanceled=false;
+  aiVoiceRecording=true;
+  aiVoiceStartY=e.clientY;
+  aiVoiceStartTime=Date.now();
+  const btn=document.getElementById('aiVoiceHold');
+  if(e.pointerId!==undefined){
+    try{btn.setPointerCapture(e.pointerId)}catch(err){}
+  }
+  btn.classList.add('recording');
+  updateAiVoiceTimerText();
+  stopAiVoiceTimer();
+  aiVoiceTimer=setInterval(updateAiVoiceTimerText,500);
+  aiRecognition=new Ctor();
+  aiRecognition.lang='zh-CN';
+  aiRecognition.interimResults=true;
+  aiRecognition.continuous=true;
+  aiRecognition.onresult=function(event){
+    let finalText='';
+    let interimText='';
+    for(let i=event.resultIndex;i<event.results.length;i++){
+      const transcript=event.results[i][0].transcript;
+      if(event.results[i].isFinal)finalText+=transcript;
+      else interimText+=transcript;
+    }
+    if(finalText)aiVoiceText+=finalText;
+    aiVoiceInterimText=interimText;
+  };
+  aiRecognition.onerror=function(event){
+    aiVoiceRecording=false;
+    aiVoiceShouldSend=false;
+    stopAiVoiceTimer();
+    resetAiVoiceButton();
+    if(event.error==='not-allowed')showToast('请允许麦克风权限，教练才能听见你');
+    else if(event.error!=='no-speech')showToast('没听清，再按住说一次');
+  };
+  aiRecognition.onend=function(){
+    aiVoiceRecording=false;
+    stopAiVoiceTimer();
+    resetAiVoiceButton();
+    if(aiVoiceShouldSend)sendRecognizedVoiceText();
+  };
+  try{
+    aiRecognition.start();
+  }catch(err){
+    aiVoiceRecording=false;
+    aiVoiceShouldSend=false;
+    stopAiVoiceTimer();
+    resetAiVoiceButton();
+    showToast('语音识别启动失败');
+  }
+}
+
+function stopAiVoiceRecording(e){
+  if(e)e.preventDefault();
+  if(aiVoiceCanceled){
+    cancelAiVoiceRecording(e);
+    showToast('已取消语音发送');
+    return;
+  }
+  aiVoiceShouldSend=true;
+  if(aiRecognition && aiVoiceRecording){
+    try{aiRecognition.stop()}catch(err){sendRecognizedVoiceText()}
+  }else{
+    sendRecognizedVoiceText();
+  }
+}
+
+function cancelAiVoiceRecording(e){
+  if(e)e.preventDefault();
+  aiVoiceShouldSend=false;
+  aiVoiceCanceled=false;
+  aiVoiceText='';
+  aiVoiceInterimText='';
+  stopAiVoiceTimer();
+  if(aiRecognition){
+    try{aiRecognition.abort()}catch(err){}
+  }
+  aiVoiceRecording=false;
+  resetAiVoiceButton();
+}
+
+function sendRecognizedVoiceText(){
+  const text=(aiVoiceText || aiVoiceInterimText || '').trim();
+  aiVoiceText='';
+  aiVoiceInterimText='';
+  aiVoiceShouldSend=false;
+  if(!text){
+    showToast('没听到内容，请按住稍微久一点再说');
+    return;
+  }
+  const input=document.getElementById('aiInput');
+  input.value=text;
+  resizeAiInput();
+  sendAiQuery();
 }
 
 async function sendAiQuery(){
@@ -2359,6 +2589,8 @@ function setAiTone(tone){
   renderAiAdvice();
 }
 window.setAiTone=setAiTone;
+window.toggleAiInputMode=toggleAiInputMode;
+window.sendAiQuery=sendAiQuery;
 
 // ===== 日历页 =====
 function renderCalendarPage(){
