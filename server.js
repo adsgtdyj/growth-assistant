@@ -16,8 +16,18 @@ const PUBLIC_DIR = path.join(__dirname, 'public');
 const ARK_API_KEY = process.env.ARK_API_KEY;
 const ARK_ENDPOINT = process.env.ARK_ENDPOINT || 'https://ark.cn-beijing.volces.com/api/v3/chat/completions';
 const ARK_MODEL = process.env.ARK_MODEL || '';
+const USERS = {};
+for (const [key, value] of Object.entries(process.env)) {
+  if (!key.startsWith('USER_')) continue;
+  const [username, ...passwordParts] = String(value).split(':');
+  const password = passwordParts.join(':');
+  if (username && password) USERS[username] = password;
+}
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+if (ADMIN_PASSWORD && !USERS[ADMIN_USERNAME]) USERS[ADMIN_USERNAME] = ADMIN_PASSWORD;
+if (!USERS.test1) USERS.test1 = 'test123456';
+if (!USERS.test2) USERS.test2 = 'test123456';
 const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
 const COOKIE_NAME = 'habit_session';
 const sessions = new Map();
@@ -58,7 +68,7 @@ function setSessionCookie(res, token, expires) {
   res.cookie(COOKIE_NAME, token, {
     httpOnly: true,
     sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
+    secure: process.env.NODE_ENV === 'production' && process.env.COOKIE_SECURE !== 'false',
     expires,
     path: '/'
   });
@@ -238,8 +248,9 @@ app.get('/api/health', (req, res) => {
 
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body || {};
-  if (!ADMIN_PASSWORD) return res.status(500).json({ ok: false, message: '管理员密码未设置' });
-  if (username !== ADMIN_USERNAME || password !== ADMIN_PASSWORD) {
+  if (!username || !password) return res.status(400).json({ ok: false, message: '请输入账号和密码' });
+  if (Object.keys(USERS).length === 0) return res.status(500).json({ ok: false, message: '管理员密码未设置' });
+  if (USERS[username] !== password) {
     return res.status(401).json({ ok: false, message: '账号或密码不正确' });
   }
   const session = createSession(username);

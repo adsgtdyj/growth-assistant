@@ -184,18 +184,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .tone-option.sassy.active{border-color:#ec4899;color:#ec4899;background:rgba(236,72,153,0.08);box-shadow:0 4px 16px rgba(236,72,153,0.2)}
 
 /* Tab栏 - 玻璃质感 */
-.tab-bar{height:88px;background:rgba(255,255,255,0.9);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid rgba(255,255,255,0.5);display:flex;padding-bottom:28px;position:absolute;bottom:0;left:0;right:0;z-index:100;border-radius:28px 28px 0 0;box-shadow:0 -8px 32px rgba(0,0,0,0.08)}
+.tab-bar{height:88px;background:rgba(255,255,255,0.9);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid rgba(255,255,255,0.5);display:flex;padding-bottom:28px;position:absolute;bottom:0;left:0;right:0;z-index:100;border-radius:28px 28px 0 0;box-shadow:0 -8px 32px rgba(0,0,0,0.08);overflow:visible}
 .tab-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:#94a3b8;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);gap:4px;letter-spacing:0.3px;font-weight:600;position:relative}
 .tab-item::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:0;height:3px;background:linear-gradient(90deg,#6366f1,#ec4899);border-radius:0 0 4px 4px;transition:width 0.3s}
 .tab-item.active{color:#6366f1}
 .tab-item.active::before{width:24px}
+.tab-item.coach-tab::before{display:none}
 .tab-item .tab-icon{width:34px;height:34px;display:flex;align-items:center;justify-content:center;transition:all 0.3s;border-radius:14px}
 .tab-item .tab-icon .app-icon{font-size:24px}
-.tab-item .coach-tab-icon{width:52px;height:52px;margin-top:-22px;border-radius:20px;background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);box-shadow:0 10px 26px rgba(99,102,241,0.36),inset 0 1px 0 rgba(255,255,255,0.45);color:#fff}
-.tab-item .coach-tab-icon .app-icon{font-size:31px;color:#fff}
-.tab-item .coach-tab-icon svg{stroke:#fff!important}
+.coach-tab{overflow:visible;justify-content:flex-start;padding-top:0}
+.coach-tab-circle{width:62px;height:62px;margin-top:-10px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);box-shadow:0 12px 28px rgba(99,102,241,0.36),inset 0 1px 0 rgba(255,255,255,0.45);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1)}
+.coach-tab-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center}
+.coach-tab-icon .app-icon{font-size:28px;color:#fff}
+.coach-tab-icon svg{stroke:#fff!important}
+.coach-tab-label{font-size:12px;line-height:1;color:#fff;font-weight:800}
 .tab-item.active .tab-icon{transform:translateY(-2px)}
-.tab-item.active .coach-tab-icon{transform:translateY(-4px) scale(1.04)}
+.tab-item.active .coach-tab-circle{transform:translateY(-4px) scale(1.04)}
 
 /* SVG渐变定义 */
 #iconGradient stop:first-child{stop-color:#6366f1}
@@ -403,8 +407,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 /* ===== 我的页面 ===== */
 .profile-page{background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%);height:100%;overflow-y:auto}
 .profile-header{background:rgba(255,255,255,0.9);backdrop-filter:blur(20px);padding:18px 24px;display:flex;align-items:center;gap:16px;border-radius:0 0 28px 28px;box-shadow:0 8px 32px rgba(99,102,241,0.1);border:1px solid rgba(255,255,255,0.8)}
-.profile-header .avatar{width:64px;height:64px;border-radius:24px;background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);background-size:200% 200%;animation:gradientShift 4s ease infinite;display:flex;align-items:center;justify-content:center;font-size:30px;color:#fff;box-shadow:0 8px 24px rgba(99,102,241,0.4);overflow:hidden}
-.profile-header .avatar img{width:100%;height:100%;object-fit:cover;border-radius:24px}
+.profile-header .avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);background-size:200% 200%;animation:gradientShift 4s ease infinite;display:flex;align-items:center;justify-content:center;font-size:30px;color:#fff;box-shadow:0 8px 24px rgba(99,102,241,0.4);overflow:hidden}
+.profile-header .avatar.has-img{background:none;box-shadow:none;animation:none}
+.profile-header .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .profile-header .nickname{font-size:22px;font-weight:800;color:#1e293b;letter-spacing:-0.3px}
 .profile-header .subtitle{font-size:14px;color:#64748b;margin-top:4px;font-weight:500}
 .profile-header .profile-info{flex:1;min-width:0}
@@ -537,6 +542,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .login-input:focus{border-color:#6366f1;box-shadow:0 0 0 4px rgba(99,102,241,0.1)}
 .login-btn{width:100%;height:52px;border:none;border-radius:18px;background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);color:#fff;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 12px 30px rgba(99,102,241,0.35);margin-top:4px}
 .login-error{min-height:20px;margin-top:12px;font-size:13px;color:#dc2626;text-align:center;font-weight:700}
+.login-accounts{font-size:12px;color:#94a3b8;text-align:center;margin-top:10px;line-height:1.6}
 
 /* 多邻国风格提醒弹窗 */
 .duo-sheet .duo-msg{font-size:20px;font-weight:800;color:#1e293b;text-align:center;line-height:1.5}
@@ -552,15 +558,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 
 /* ===== 我的页面 - 统计卡片网格 ===== */
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px 20px}
-.stat-card{background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-radius:20px;padding:20px;text-align:center;box-shadow:0 4px 20px rgba(99,102,241,0.12);border:1px solid rgba(255,255,255,0.8);transition:all 0.3s ease}
-.stat-card:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(99,102,241,0.18)}
-.stat-card .stat-num{font-size:32px;font-weight:900;line-height:1.1}
-.stat-card .stat-num.dark{color:#1e293b}
-.stat-card .stat-num.orange{background:linear-gradient(135deg,#f97316,#f43f5e);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.stat-card .stat-num.green{background:linear-gradient(135deg,#10b981,#059669);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.stat-card .stat-num.purple{background:linear-gradient(135deg,#6366f1,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.stat-card .stat-label{font-size:13px;color:#64748b;margin-top:8px;font-weight:600}
 
 /* ===== 个人资料编辑弹窗 ===== */
 .edit-profile-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);display:none;z-index:300;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.3s ease}
@@ -571,6 +568,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .edit-profile-modal .form-label{font-size:13px;font-weight:700;color:#64748b;margin-bottom:8px;display:block;letter-spacing:0.5px;text-transform:uppercase}
 .edit-profile-modal .form-input{width:100%;padding:14px 18px;border:2px solid #e2e8f0;border-radius:16px;font-size:15px;outline:none;background:#f8fafc;transition:all 0.3s;font-weight:500}
 .edit-profile-modal .form-input:focus{border-color:#6366f1;background:#fff;box-shadow:0 0 0 4px rgba(99,102,241,0.1)}
+.account-display{padding:14px 18px;border-radius:16px;background:#f8fafc;border:1px solid #e2e8f0;color:#475569;font-size:15px;font-weight:800}
 .avatar-upload-area{display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px;border:2px dashed #e2e8f0;border-radius:20px;cursor:pointer;transition:all 0.3s;background:#fafbfc}
 .avatar-upload-area:hover{border-color:#6366f1;background:rgba(99,102,241,0.04)}
 .avatar-upload-area .avatar-preview{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,rgba(99,102,241,0.1),rgba(236,72,153,0.1));display:flex;align-items:center;justify-content:center;font-size:36px;overflow:hidden}
@@ -627,10 +625,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
     <div class="login-mark">✓</div>
     <div class="login-title">欢迎回来</div>
     <div class="login-sub">登录后，你的打卡记录会保存到云端，手机上也能长期使用。</div>
-    <input class="login-input" id="loginUsername" autocomplete="username" placeholder="账号" value="admin">
+    <input class="login-input" id="loginUsername" autocomplete="username" placeholder="账号">
     <input class="login-input" id="loginPassword" type="password" autocomplete="current-password" placeholder="密码" onkeydown="if(event.key==='Enter')login()">
     <button class="login-btn" onclick="login()">进入成长助理</button>
     <div class="login-error" id="loginError"></div>
+    <div class="login-accounts">测试账号：test1 / test2，密码：test123456</div>
   </div>
 </div>
 
@@ -713,7 +712,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
       <div class="tab-bar" data-tab-for="index">
         <div class="tab-item active" onclick="switchPage('index')"><span class="tab-icon" data-icon="check"></span>今日</div>
         <div class="tab-item" onclick="switchPage('calendar')"><span class="tab-icon" data-icon="calendar"></span>日历</div>
-        <div class="tab-item" onclick="switchPage('assistant')"><span class="tab-icon coach-tab-icon" data-icon="coach"></span>教练</div>
+        <div class="tab-item coach-tab" onclick="switchPage('assistant')"><span class="coach-tab-circle"><span class="coach-tab-icon" data-icon="coach"></span><span class="coach-tab-label">教练</span></span></div>
         <div class="tab-item" onclick="switchPage('analytics')"><span class="tab-icon" data-icon="chart"></span>分析</div>
         <div class="tab-item" onclick="switchPage('stats')"><span class="tab-icon" data-icon="user"></span>我的</div>
       </div>
@@ -752,7 +751,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
       <div class="tab-bar" data-tab-for="assistant">
         <div class="tab-item" onclick="switchPage('index')"><span class="tab-icon" data-icon="check"></span>今日</div>
         <div class="tab-item" onclick="switchPage('calendar')"><span class="tab-icon" data-icon="calendar"></span>日历</div>
-        <div class="tab-item active" onclick="switchPage('assistant')"><span class="tab-icon coach-tab-icon" data-icon="coach"></span>教练</div>
+        <div class="tab-item coach-tab active" onclick="switchPage('assistant')"><span class="coach-tab-circle"><span class="coach-tab-icon" data-icon="coach"></span><span class="coach-tab-label">教练</span></span></div>
         <div class="tab-item" onclick="switchPage('analytics')"><span class="tab-icon" data-icon="chart"></span>分析</div>
         <div class="tab-item" onclick="switchPage('stats')"><span class="tab-icon" data-icon="user"></span>我的</div>
       </div>
@@ -792,7 +791,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
       <div class="tab-bar" data-tab-for="calendar">
         <div class="tab-item" onclick="switchPage('index')"><span class="tab-icon" data-icon="check"></span>今日</div>
         <div class="tab-item active" onclick="switchPage('calendar')"><span class="tab-icon" data-icon="calendar"></span>日历</div>
-        <div class="tab-item" onclick="switchPage('assistant')"><span class="tab-icon coach-tab-icon" data-icon="coach"></span>教练</div>
+        <div class="tab-item coach-tab" onclick="switchPage('assistant')"><span class="coach-tab-circle"><span class="coach-tab-icon" data-icon="coach"></span><span class="coach-tab-label">教练</span></span></div>
         <div class="tab-item" onclick="switchPage('analytics')"><span class="tab-icon" data-icon="chart"></span>分析</div>
         <div class="tab-item" onclick="switchPage('stats')"><span class="tab-icon" data-icon="user"></span>我的</div>
       </div>
@@ -837,7 +836,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
       <div class="tab-bar" data-tab-for="analytics">
         <div class="tab-item" onclick="switchPage('index')"><span class="tab-icon" data-icon="check"></span>今日</div>
         <div class="tab-item" onclick="switchPage('calendar')"><span class="tab-icon" data-icon="calendar"></span>日历</div>
-        <div class="tab-item" onclick="switchPage('assistant')"><span class="tab-icon coach-tab-icon" data-icon="coach"></span>教练</div>
+        <div class="tab-item coach-tab" onclick="switchPage('assistant')"><span class="coach-tab-circle"><span class="coach-tab-icon" data-icon="coach"></span><span class="coach-tab-label">教练</span></span></div>
         <div class="tab-item active" onclick="switchPage('analytics')"><span class="tab-icon" data-icon="chart"></span>分析</div>
         <div class="tab-item" onclick="switchPage('stats')"><span class="tab-icon" data-icon="user"></span>我的</div>
       </div>
@@ -875,6 +874,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
             <div class="setting-item" style="position:relative"><span class="label"><span class="app-icon" data-icon="download"></span> 导入数据</span><span class="arrow">›</span><input type="file" accept=".json" onchange="importData(event)" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer"/></div>
             <div class="setting-item" onclick="clearAllData()"><span class="label" style="color:#ef4444"><span class="app-icon" data-icon="trash"></span> 清除所有数据</span><span class="arrow">›</span></div>
             <div class="setting-item"><span class="label"><span class="app-icon" data-icon="info"></span> 关于 v13</span><span class="arrow">›</span></div>
+            <div class="setting-item" onclick="logout()"><span class="label" style="color:#6366f1"><span class="app-icon" data-icon="logout"></span> 退出登录</span><span class="arrow">›</span></div>
           </div>
         </div>
       <!-- 编辑个人资料弹窗 -->
@@ -890,8 +890,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
             <input type="file" id="avatarFileInput" accept="image/*" onchange="handleAvatarUpload(event)" style="display:none">
           </div>
           <div class="form-group">
+            <div class="form-label">账号</div>
+            <div class="account-display" id="editAccountName">-</div>
+          </div>
+          <div class="form-group">
             <div class="form-label">昵称</div>
-            <input class="form-input" id="editNickname" placeholder="请输入昵称" maxlength="10"/>
+            <input class="form-input" id="editNickname" placeholder="不填则显示账号" maxlength="10"/>
           </div>
           <div class="form-group">
             <div class="form-label">座右铭</div>
@@ -907,7 +911,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
       <div class="tab-bar" data-tab-for="stats">
         <div class="tab-item" onclick="switchPage('index')"><span class="tab-icon" data-icon="check"></span>今日</div>
         <div class="tab-item" onclick="switchPage('calendar')"><span class="tab-icon" data-icon="calendar"></span>日历</div>
-        <div class="tab-item" onclick="switchPage('assistant')"><span class="tab-icon coach-tab-icon" data-icon="coach"></span>教练</div>
+        <div class="tab-item coach-tab" onclick="switchPage('assistant')"><span class="coach-tab-circle"><span class="coach-tab-icon" data-icon="coach"></span><span class="coach-tab-label">教练</span></span></div>
         <div class="tab-item" onclick="switchPage('analytics')"><span class="tab-icon" data-icon="chart"></span>分析</div>
         <div class="tab-item active" onclick="switchPage('stats')"><span class="tab-icon" data-icon="user"></span>我的</div>
       </div>
@@ -1015,6 +1019,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 <script>
 // ===== v13 数据模型 =====
 const STORAGE_KEY = 'habit_checkin_app_v13';
+let currentUsername = null;
+function getStorageKey(){return currentUsername ? `${STORAGE_KEY}:${currentUsername}` : STORAGE_KEY;}
+function getDisplayName(){return (appData?.settings?.nickname || '').trim() || currentUsername || '未登录';}
 const ICONS = ['fitness','book','water','stretch','music','pen','moon','apple','run','palette','note','pill','leaf','sun','target','heart'];
 const ICON_PATHS = {
   fitness:'<path d="M6 7v10"/><path d="M18 7v10"/><path d="M3 10v4"/><path d="M21 10v4"/><path d="M6 12h12"/>',
@@ -1174,7 +1181,7 @@ function getDefaultData(){
     checkins: defaultCheckins,
     chatHistory: [],
     settings: {
-      nickname: '习惯达人',
+      nickname: '',
       avatar: 'user',
       slogan: '产后恢复期，动作质量优先，稳定训练就赢了。',
       aiTone: 'sassy',
@@ -1219,7 +1226,7 @@ function mergeFitnessSeed(data){
 
 function loadData(){
   try{
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(getStorageKey());
     if(raw) return mergeFitnessSeed(JSON.parse(raw));
   }catch(e){console.error('加载数据错误:',e)}
   return getDefaultData();
@@ -1230,7 +1237,7 @@ let isLoggedIn = false;
 let isBootstrapping = true;
 
 function saveData(data, skipRefresh){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  localStorage.setItem(getStorageKey(), JSON.stringify(data));
   scheduleCloudSync(data);
   if(!skipRefresh) refreshAll();
 }
@@ -1285,6 +1292,7 @@ async function login(){
     const response=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,password})});
     const result=await response.json();
     if(!response.ok)throw new Error(result.message||'登录失败');
+    currentUsername=result.user?.username || username;
     isLoggedIn=true;
     hideLogin();
     await loadCloudData();
@@ -1293,10 +1301,21 @@ async function login(){
   }
 }
 
+async function logout(){
+  try{await fetch('/api/logout',{method:'POST'});}catch(e){}
+  isLoggedIn=false;
+  currentUsername=null;
+  appData=getDefaultData();
+  refreshAll();
+  showLogin();
+}
+
 async function checkLoginAndLoad(){
   try{
     const response=await fetch('/api/me');
     if(!response.ok){showLogin();isBootstrapping=false;return;}
+    const result=await response.json();
+    currentUsername=result.user?.username || null;
     isLoggedIn=true;
     hideLogin();
     await loadCloudData();
@@ -1312,12 +1331,13 @@ async function loadCloudData(){
     const response=await fetch('/api/data');
     if(response.status===401){showLogin();return;}
     const result=await response.json();
-    const localData=loadData();
+    const hasAccountLocalData=!!localStorage.getItem(getStorageKey());
+    const localData=hasAccountLocalData ? loadData() : getDefaultData();
     if(result.data){
       appData=mergeFitnessSeed(result.data);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      localStorage.setItem(getStorageKey(), JSON.stringify(appData));
       updateSyncStatus('ok','云端同步：已加载');
-    }else if(localStorage.getItem(STORAGE_KEY)&&confirm('发现本机旧数据，是否上传到云端？')){
+    }else if(hasAccountLocalData&&confirm(`发现 ${currentUsername} 的本机旧数据，是否上传到云端？`)){
       appData=localData;
       await syncToCloud(appData);
       updateSyncStatus('ok','云端同步：迁移完成');
@@ -1349,7 +1369,8 @@ window.login=login;
 
 // v13：编辑个人资料相关函数（头像改为相册上传）
 function openEditProfile(){
-  document.getElementById('editNickname').value=appData.settings.nickname;
+  document.getElementById('editAccountName').textContent=currentUsername || '-';
+  document.getElementById('editNickname').value=appData.settings.nickname || '';
   document.getElementById('editSlogan').value=appData.settings.slogan;
   // 显示当前头像预览
   updateAvatarPreview();
@@ -1395,8 +1416,10 @@ function updateProfileAvatarDisplay(){
   if(!el)return;
   const avatar=appData.settings.avatar;
   if(avatar&&avatar.startsWith('data:')){
+    el.classList.add('has-img');
     el.innerHTML='<img src="'+avatar+'" alt="头像" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
   } else {
+    el.classList.remove('has-img');
     el.innerHTML=iconSvg(avatar||'user');
   }
 }
@@ -1404,7 +1427,6 @@ function updateProfileAvatarDisplay(){
 function saveProfile(){
   const nickname=document.getElementById('editNickname').value.trim();
   const slogan=document.getElementById('editSlogan').value.trim();
-  if(!nickname){showToast('请输入昵称');return;}
   appData.settings.nickname=nickname;
   if(slogan)appData.settings.slogan=slogan;
   saveData(appData, true);
@@ -1783,7 +1805,7 @@ function renderAiAdvice(){
   const todayStr=today();
   const pending=appData.habits.filter(hab=>!appData.checkins.some(c=>c.habitId===hab.id&&c.date===todayStr));
   const tone=appData.settings.aiTone||'normal';
-  const nickname=appData.settings.nickname;
+  const nickname=getDisplayName();
   let adviceText='';
   if(pending.length===0){
     const dones=sassy(
@@ -1958,6 +1980,7 @@ let aiVoiceInterimText = '';
 let aiVoiceRecording = false;
 let aiVoiceShouldSend = false;
 let aiVoiceCanceled = false;
+let aiVoiceSuppressResult = false;
 let aiVoiceStartY = 0;
 let aiVoiceStartTime = 0;
 let aiVoiceTimer = null;
@@ -2068,6 +2091,7 @@ function startAiVoiceRecording(e){
   aiVoiceInterimText='';
   aiVoiceShouldSend=false;
   aiVoiceCanceled=false;
+  aiVoiceSuppressResult=false;
   aiVoiceRecording=true;
   aiVoiceStartY=e.clientY;
   aiVoiceStartTime=Date.now();
@@ -2096,17 +2120,22 @@ function startAiVoiceRecording(e){
   };
   aiRecognition.onerror=function(event){
     aiVoiceRecording=false;
+    const suppressed=aiVoiceSuppressResult || aiVoiceCanceled;
     aiVoiceShouldSend=false;
     stopAiVoiceTimer();
     resetAiVoiceButton();
+    if(suppressed)return;
     if(event.error==='not-allowed')showToast('请允许麦克风权限，教练才能听见你');
     else if(event.error!=='no-speech')showToast('没听清，再按住说一次');
   };
   aiRecognition.onend=function(){
     aiVoiceRecording=false;
+    const shouldSend=aiVoiceShouldSend && !aiVoiceSuppressResult && !aiVoiceCanceled;
     stopAiVoiceTimer();
     resetAiVoiceButton();
-    if(aiVoiceShouldSend)sendRecognizedVoiceText();
+    if(shouldSend)sendRecognizedVoiceText();
+    aiVoiceSuppressResult=false;
+    aiVoiceCanceled=false;
   };
   try{
     aiRecognition.start();
@@ -2137,7 +2166,8 @@ function stopAiVoiceRecording(e){
 function cancelAiVoiceRecording(e){
   if(e)e.preventDefault();
   aiVoiceShouldSend=false;
-  aiVoiceCanceled=false;
+  aiVoiceCanceled=true;
+  aiVoiceSuppressResult=true;
   aiVoiceText='';
   aiVoiceInterimText='';
   stopAiVoiceTimer();
@@ -2145,7 +2175,8 @@ function cancelAiVoiceRecording(e){
     try{aiRecognition.abort()}catch(err){}
   }
   aiVoiceRecording=false;
-  resetAiVoiceButton();
+  resetAiVoiceButton('已取消发送');
+  setTimeout(()=>resetAiVoiceButton(),800);
 }
 
 function sendRecognizedVoiceText(){
@@ -2398,7 +2429,7 @@ const AIEngine = {
 
     if(intent.id==='ask_health'){
       const tone=appData.settings.aiTone||'normal';
-      const nickname=appData.settings.nickname;
+      const nickname=getDisplayName();
       const answers={
         '腹':`腹部训练要点：\n\n· 腹直肌分离推荐：死虫式、仰卧抬腿\n· 避免传统卷腹，会加重分离\n· 核心重点：呼吸+横向收缩\n· 推荐动作：平板支撑、鸟狗式`,
         '肩':`肩部训练要点：\n\n· 侧平举——中束最佳动作，小重量多次数\n· 推举——前束主力，注意锁肩\n· 面拉——后束+肩袖健康\n· 关键：别耸肩！肩胛骨下沉再发力`,
@@ -2417,7 +2448,7 @@ const AIEngine = {
 
     if(intent.id==='ask_diet'){
       const tone=appData.settings.aiTone||'normal';
-      const nickname=appData.settings.nickname;
+      const nickname=getDisplayName();
       const answers={
         '蛋白':`${tone==='sassy'?nickname+'，听好了：\n\n':'关于蛋白质：\n\n'}· 力量训练日：1.6-2.2g/kg 体重\n· 优质来源：鸡胸肉、鸡蛋、鱼虾、豆腐\n· 练后30分钟内补充吸收最好\n· 每餐至少20-30g，分3-4餐`,
         '碳水':`${tone==='sassy'?'别怕吃碳水，'+nickname+'！\n\n':'碳水摄入建议：\n\n'}· 练前1-2h：慢碳（燕麦、全麦面包）\n· 练后：快碳（香蕉、米饭）\n· 每日3-5g/kg，减脂不低于2g/kg`,
@@ -2432,7 +2463,7 @@ const AIEngine = {
     }
 
     if(intent.id==='encourage'){
-      const nickname=appData.settings.nickname;
+      const nickname=getDisplayName();
       const slogan=appData.settings.slogan;
       const streak=calcMaxStreak();
       const tone=appData.settings.aiTone||'normal';
@@ -2468,7 +2499,7 @@ const AIEngine = {
     }
 
     if(intent.id==='greeting'){
-      const nickname=appData.settings.nickname;
+      const nickname=getDisplayName();
       const tone=appData.settings.aiTone||'normal';
       const h=new Date().getHours();
       const timeGreet=h<6?'夜深了':h<12?'早上好':h<18?'下午好':'晚上好';
@@ -2498,7 +2529,7 @@ const AIEngine = {
 
     // 尝试理解用户的关键词，给出更自然的回应
       const tone=appData.settings.aiTone||'normal';
-      const nickname=appData.settings.nickname;
+      const nickname=getDisplayName();
       const pending=appData.habits.filter(hab=>!appData.checkins.some(c=>c.habitId===hab.id&&c.date===today()));
       const streak=calcMaxStreak();
 
@@ -2783,7 +2814,7 @@ function renderStatsPage(){
   const level=calcLevel();
   document.getElementById('profileLevel')&&(document.getElementById('profileLevel').textContent=`Lv.${level.lv}`);
   // v11：显示用户信息
-  document.getElementById('profileNickname').textContent=appData.settings.nickname;
+  document.getElementById('profileNickname').textContent=getDisplayName();
   updateProfileAvatarDisplay();
   document.getElementById('profileSlogan').textContent=appData.settings.slogan;
   const myList=document.getElementById('myHabitList');myList.innerHTML='';
