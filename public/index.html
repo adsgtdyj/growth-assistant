@@ -1210,17 +1210,13 @@ function getDefaultData(){
 
 function mergeFitnessSeed(data){
   const seed = getDefaultData();
-  if(data.fitnessSeedVersion>=seed.fitnessSeedVersion)return data;
-  const habits = data.habits || [];
-  seed.habits.forEach(h=>{if(!habits.some(x=>x.id===h.id||x.name===h.name))habits.push(h)});
-  const checkins = data.checkins || [];
-  seed.checkins.forEach(c=>{if(!checkins.some(x=>x.id===c.id))checkins.push(c)});
-  data.habits = habits;
-  data.checkins = checkins;
-  data.settings = {...seed.settings,...(data.settings||{}),fitnessProfile:seed.settings.fitnessProfile,reminderTimes:{...seed.settings.reminderTimes,...((data.settings||{}).reminderTimes||{})}};
-  data.taskLogs = [...seed.taskLogs,...(data.taskLogs||[]).filter(log=>!seed.taskLogs.some(x=>x.id===log.id))];
-  data.aiPlans = [...seed.aiPlans,...(data.aiPlans||[]).filter(plan=>!seed.aiPlans.some(x=>x.id===plan.id))];
+  data.habits = Array.isArray(data.habits) ? data.habits : [];
+  data.checkins = Array.isArray(data.checkins) ? data.checkins : [];
+  data.settings = {...seed.settings,...(data.settings||{}),reminderTimes:{...seed.settings.reminderTimes,...((data.settings||{}).reminderTimes||{})}};
+  data.taskLogs = Array.isArray(data.taskLogs) ? data.taskLogs : [];
+  data.aiPlans = Array.isArray(data.aiPlans) ? data.aiPlans : [];
   data.fitnessSeedVersion = seed.fitnessSeedVersion;
+  data.version = data.version || seed.version;
   return data;
 }
 
@@ -1429,8 +1425,7 @@ function saveProfile(){
   const slogan=document.getElementById('editSlogan').value.trim();
   appData.settings.nickname=nickname;
   if(slogan)appData.settings.slogan=slogan;
-  saveData(appData, true);
-  renderStatsPage();
+  saveData(appData);
   closeEditProfile();
   showToast('个人资料已保存');
 }
@@ -1447,7 +1442,7 @@ function refreshAll(){
 }
 
 // ===== 初始化 =====
-let appData = loadData();
+let appData = getDefaultData();
 normalizeAppData();
 
 let currentCheckinHabitId = null;

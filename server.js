@@ -88,7 +88,7 @@ async function writeCloudStore(store) {
 }
 
 app.use(cookieParser());
-app.use(express.json({ limit: '5mb' }));
+app.use(express.json({ limit: '25mb' }));
 app.use(express.static(PUBLIC_DIR));
 
 function buildSystemPrompt(habits, checkins, stats, settings) {
