@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ai-growth-assistant-cloud-pwa-6';
+const CACHE_NAME = 'ai-growth-assistant-cloud-pwa-13';
 const APP_SHELL = [
   '/',
   '/index.html',

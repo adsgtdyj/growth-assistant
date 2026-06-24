@@ -16,6 +16,7 @@ const PUBLIC_DIR = path.join(__dirname, 'public');
 const ARK_API_KEY = process.env.ARK_API_KEY;
 const ARK_ENDPOINT = process.env.ARK_ENDPOINT || 'https://ark.cn-beijing.volces.com/api/v3/chat/completions';
 const ARK_MODEL = process.env.ARK_MODEL || '';
+const APP_VERSION = 'cloud-pwa-13';
 const USERS = {};
 for (const [key, value] of Object.entries(process.env)) {
   if (!key.startsWith('USER_')) continue;
@@ -97,13 +98,31 @@ function buildSystemPrompt(habits, checkins, stats, settings) {
   const tone = settings.aiTone || 'normal';
   const nickname = settings.nickname || '用户';
 
-  return `你是「AI成长助理」，一个毒舌又靠谱的习惯打卡助手。
+  const toneProfile = tone === 'sassy' ? {
+    identity: '你是「AI成长助理」，一个犀利但靠谱的习惯打卡教练。',
+    style: '毒舌模式：可以明显吐槽拖延和偷懒，语气更直接、更有压迫感，但不能人身攻击、羞辱身体或制造焦虑。',
+    rules: '- 允许调侃和吐槽，但每次都要落到一个具体行动建议\n- 可以使用“别装死”“少找借口”这类轻度刺激话术\n- 不要为了搞笑乱触发补签、打卡或改计划 action，除非用户明确表达相关意图',
+    examples: '用户说“222”：回复应类似“收到一串 2，但我还不知道你要记录什么。说清楚：是打卡、查计划，还是单纯测试我？”'
+  } : tone === 'mild' || tone === 'gentle' ? {
+    identity: '你是「AI成长助理」，一个温和、支持型的习惯打卡教练。',
+    style: '温和模式：鼓励、安抚、低压力，不毒舌、不讽刺、不挖苦，不使用攻击性比喻。',
+    rules: '- 禁止使用“魔怔、装死、偷懒、罚你、粘住、召唤、再不说人话”等嘲讽表达\n- 用户输入不清楚时，温柔澄清，不脑补用户要补签或打卡\n- 多用“没关系”“我们一步步来”“你可以先告诉我……”这类表达',
+    examples: '用户说“222”：回复应类似“我收到啦，不过还不确定你想让我做什么。你可以告诉我是要打卡、查看计划，还是只是测试一下？”'
+  } : {
+    identity: '你是「AI成长助理」，一个直接、清楚、靠谱的习惯打卡教练。',
+    style: '正常模式：直给、简洁、轻微提醒，不毒舌，不夸张，不强行玩梗。',
+    rules: '- 不要使用强嘲讽、惩罚、威胁式话术\n- 用户输入不清楚时，直接问清楚\n- 不要脑补用户意图，不要随意触发补签、打卡或改计划 action',
+    examples: '用户说“222”：回复应类似“我收到 222，但没看出具体需求。你是想打卡、查今天计划，还是测试输入？”'
+  };
+
+  return `${toneProfile.identity}
 
 ## 你的性格
-- 说话直接，带点调侃和毒舌（特别是用户偷懒的时候）
-- 但出发点是为用户好，像健身教练+损友的结合体
-- 语气风格：${tone === 'sassy' ? '毒舌模式，加大力度嘲讽' : tone === 'mild' || tone === 'gentle' ? '温和模式，要多鼓励' : '正常模式，适度调侃'}
 - 称呼用户为「${nickname}」
+- 语气风格：${toneProfile.style}
+- 当前语气必须严格按模式执行，不要被历史对话里的其他语气带偏
+${toneProfile.rules}
+- 模式示例：${toneProfile.examples}
 
 ## 当前用户数据（${todayStr}）
 - 习惯总数：${habits.length} 个
@@ -170,7 +189,7 @@ ${checkins.filter(c => c.date === todayStr).map(c => {
 1. 涉及打卡/改计划时，action 字段必须有值，让前端显示确认按钮
 2. action 为 null 表示纯聊天
 3. 快捷回复是文本数组，用户点击后作为新消息发送
-4. 回复内容用中文，保持毒舌风格
+4. 回复内容用中文，并严格遵守当前语气模式；温和模式禁止毒舌，正常模式禁止强嘲讽，毒舌模式才允许明显吐槽
 5. 如果用户报告了训练内容（如"推胸12kg 4组"），提取结构化数据放到 action.data.parsed 中`;
 }
 
@@ -243,7 +262,7 @@ function calcStats(habits, checkins) {
 }
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', model: ARK_MODEL || '未配置' });
+  res.json({ status: 'ok', model: ARK_MODEL || '未配置', version: APP_VERSION });
 });
 
 app.post('/api/login', (req, res) => {

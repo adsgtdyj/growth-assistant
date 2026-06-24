@@ -734,8 +734,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
           <div class="quick-pill" onclick="aiAction('data')"><svg viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>我的数据</div>
           <div class="quick-pill" onclick="quickModifyPlan()"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>调整计划</div>
         </div>
-        <!-- v13：毒舌个性签名 -->
-        <div style="padding:0 24px;margin:-6px 0 10px;font-size:13px;color:#94a3b8;font-style:italic">毒舌教练在线盯人，玻璃心请绕道</div>
+        <div id="aiToneTagline" style="padding:0 24px;margin:-6px 0 10px;font-size:13px;color:#94a3b8;font-style:italic">教练在线，陪你把计划落到今天</div>
         <div class="assistant-scroll" id="assistantScroll">
           <div id="aiHistoryArea"></div>
         </div>
@@ -1232,8 +1231,26 @@ let syncTimer = null;
 let isLoggedIn = false;
 let isBootstrapping = true;
 
+function saveLocalData(data){
+  const payload = JSON.stringify(data);
+  try{
+    localStorage.setItem(getStorageKey(), payload);
+    return true;
+  }catch(e){
+    try{
+      localStorage.removeItem(getStorageKey());
+      localStorage.setItem(getStorageKey(), payload);
+      return true;
+    }catch(err){
+      console.warn('本机缓存写入失败:', err.message);
+      updateSyncStatus('error','本机缓存已满，仍会尝试云端保存');
+      return false;
+    }
+  }
+}
+
 function saveData(data, skipRefresh){
-  localStorage.setItem(getStorageKey(), JSON.stringify(data));
+  saveLocalData(data);
   scheduleCloudSync(data);
   if(!skipRefresh) refreshAll();
 }
@@ -1253,11 +1270,18 @@ async function syncToCloud(data){
       body:JSON.stringify(data)
     });
     if(response.status===401){showLogin();return;}
-    if(!response.ok)throw new Error('保存失败');
+    if(!response.ok){
+      let message = '保存失败';
+      try{
+        const result = await response.json();
+        message = result.message || message;
+      }catch(e){}
+      throw new Error(`${response.status} ${message}`);
+    }
     const time=new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
     updateSyncStatus('ok','云端同步：已保存 '+time);
   }catch(e){
-    updateSyncStatus('error','云端同步：稍后重试');
+    updateSyncStatus('error','云端同步：失败 '+e.message);
     console.warn('云端同步暂时不可用:', e.message);
   }
 }
@@ -1331,7 +1355,7 @@ async function loadCloudData(){
     const localData=hasAccountLocalData ? loadData() : getDefaultData();
     if(result.data){
       appData=mergeFitnessSeed(result.data);
-      localStorage.setItem(getStorageKey(), JSON.stringify(appData));
+      saveLocalData(appData);
       updateSyncStatus('ok','云端同步：已加载');
     }else if(hasAccountLocalData&&confirm(`发现 ${currentUsername} 的本机旧数据，是否上传到云端？`)){
       appData=localData;
@@ -1342,6 +1366,7 @@ async function loadCloudData(){
       await syncToCloud(appData);
     }
     normalizeAppData();
+    showPageImmediately('index');
     refreshAll();
   }catch(e){
     updateSyncStatus('error','云端同步：加载失败');
@@ -1386,11 +1411,25 @@ function handleAvatarUpload(event){
   if(file.size>10*1024*1024){showToast('图片不能超过10MB哦~');return;}
   const reader=new FileReader();
   reader.onload=function(e){
-    appData.settings.avatar=e.target.result;
-    updateAvatarPreview();
-    updateProfileAvatarDisplay();
-    saveData(appData);
-    showToast('头像已更新');
+    const img = new Image();
+    img.onload=function(){
+      const size = 320;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      const scale = Math.max(size / img.width, size / img.height);
+      const width = img.width * scale;
+      const height = img.height * scale;
+      ctx.drawImage(img, (size - width) / 2, (size - height) / 2, width, height);
+      appData.settings.avatar = canvas.toDataURL('image/jpeg', 0.82);
+      updateAvatarPreview();
+      updateProfileAvatarDisplay();
+      saveData(appData);
+      showToast('头像已更新');
+    };
+    img.onerror=function(){showToast('头像读取失败，请换一张图片')};
+    img.src=e.target.result;
   };
   reader.readAsDataURL(file);
 }
@@ -1468,7 +1507,7 @@ function enableHorizontalDrag(){
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', ()=>{
-  refreshAll();
+  showPageImmediately('index');
   renderTodayDate();
   updateStatusBarTime();
   checkLoginAndLoad();
@@ -1738,6 +1777,18 @@ function calcLevel(){
 }
 
 // ===== 页面切换 =====
+function showPageImmediately(page){
+  currentPage=page;
+  document.querySelectorAll('.page-view').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page)?.classList.add('active');
+  const tabBarMap={'index':0,'calendar':1,'assistant':2,'analytics':3,'stats':4};
+  document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
+  const tabIdx=tabBarMap[page];
+  if(tabIdx!==undefined){
+    document.querySelectorAll('.page-view.active .tab-item')[tabIdx]?.classList.add('active');
+  }
+}
+
 function switchPage(page, isBack=false){
   if(!isBack && page!==currentPage){pageHistory.push(currentPage)}
   currentPage=page;
@@ -1750,6 +1801,7 @@ function switchPage(page, isBack=false){
   if(tabIdx!==undefined){
     document.querySelectorAll('.page-view.active .tab-item')[tabIdx]?.classList.add('active');
   }
+  if(page==='index')renderIndexPage();
   if(page==='calendar')renderCalendarPage();
   if(page==='analytics')renderAnalyticsPage();
   if(page==='stats')renderStatsPage();
@@ -1777,18 +1829,43 @@ window.goBack = goBack;
 function renderAssistantPage(){
   const d=new Date();
   const h=d.getHours();
-  const timeGreet=h<6?'夜深了还不睡':h<12?'早上好啊懒虫':h<14?'中午吃了吗':h<18?'下午摸鱼呢':'晚上好';
-  document.getElementById('aiGreetTitle').textContent=timeGreet;
+  const tone=appData.settings.aiTone||'normal';
+  const copy={
+    mild:{
+      greet:h<6?'夜深了，早点休息呀':h<12?'早上好，慢慢开始':h<14?'中午好，照顾好自己':h<18?'下午好，稳稳推进':'晚上好，今天辛苦了',
+      empty:'还没有习惯，我们可以先从一个很小的目标开始。',
+      pending:count=>`今天还有 ${count} 个习惯没完成，选一个最轻松的先开始吧。`,
+      done:'今天的任务都完成了，很棒，记得好好休息。',
+      tagline:'温和教练在线，陪你一步步稳定推进'
+    },
+    normal:{
+      greet:h<6?'夜深了':h<12?'早上好':h<14?'中午好':h<18?'下午好':'晚上好',
+      empty:'还没有习惯，先创建一个今天能完成的小目标。',
+      pending:count=>`今天还有 ${count} 个习惯未打卡，先完成一个。`,
+      done:'今天任务已完成，保持这个节奏。',
+      tagline:'教练在线，帮你把计划落到今天'
+    },
+    sassy:{
+      greet:h<6?'夜深了还不睡':h<12?'早上好啊懒虫':h<14?'中午吃了吗':h<18?'下午摸鱼呢':'晚上好',
+      empty:'一个习惯都没有，你是来搞笑的吗？先建一个再说。',
+      pending:count=>`还有 ${count} 个没打卡，你打算拖到明天？`,
+      done:'今天任务都完成了？太阳打西边出来了！',
+      tagline:'毒舌教练在线盯人，玻璃心请绕道'
+    }
+  }[tone] || null;
+  document.getElementById('aiGreetTitle').textContent=copy.greet;
 
   const todayStr=today();
   const pending=appData.habits.filter(hab=>!appData.checkins.some(c=>c.habitId===hab.id&&c.date===todayStr));
   if(appData.habits.length===0){
-    document.getElementById('aiGreetSub').textContent='一个习惯都没有，你是来搞笑的吗？';
+    document.getElementById('aiGreetSub').textContent=copy.empty;
   } else if(pending.length>0){
-    document.getElementById('aiGreetSub').textContent=`还有 ${pending.length} 个没打卡，你打算拖到明天？`;
+    document.getElementById('aiGreetSub').textContent=copy.pending(pending.length);
   } else {
-    document.getElementById('aiGreetSub').textContent='今天任务都完成了？太阳打西边出来了！';
+    document.getElementById('aiGreetSub').textContent=copy.done;
   }
+  const tagline=document.getElementById('aiToneTagline');
+  if(tagline)tagline.textContent=copy.tagline;
   renderChatHistory();
   renderAiAdvice();
   initAiInputMode();
@@ -1833,10 +1910,16 @@ function renderChatHistory(){
   const area=document.getElementById('aiHistoryArea');
   area.innerHTML='';
   if(!appData.chatHistory || appData.chatHistory.length===0){
+    const tone=appData.settings.aiTone||'normal';
+    const emptyCopy={
+      mild:['我是你的温和教练，陪你稳定养成习惯','试试"今天练什么"、"我这周表现"','也可以说"我有点不想坚持了"，我们一起拆小一点'],
+      normal:['我是你的成长教练，帮你把计划落到行动','试试"今天练什么"、"我这周表现"','也可以直接说"打卡"或"帮我调整计划"'],
+      sassy:['我是你的毒舌教练，负责盯你成长','试试"今天练什么"、"我这周表现"','或者直接说"不想坚持了"来找骂']
+    }[tone] || null;
     area.innerHTML=`<div style="text-align:center;padding:50px 30px;color:#64748b;font-size:15px;line-height:2">
-      ${iconSvg('bot')} 我是你的毒舌教练，负责盯你成长<br>
-      试试"今天练什么"、"我这周表现"<br>
-      或者直接说"不想坚持了"来找骂
+      ${iconSvg('bot')} ${emptyCopy[0]}<br>
+      ${escapeHtml(emptyCopy[1])}<br>
+      ${escapeHtml(emptyCopy[2])}
     </div>`;
     return;
   }
@@ -1870,7 +1953,8 @@ function renderChatHistory(){
           actionsHtml='<div class="msg-actions">'+msg.quick.map(q=>`<button class="msg-action-btn" onclick="${q.action}">${formatInlineIcons(q.text)}</button>`).join('')+'</div>';
         }
         const timeStr = msg.time || '';
-        msgEl.innerHTML=`<div class="msg-ai">${formatMessageText(msg.text)}${timeStr?'<div class="msg-time">'+timeStr+'</div>':''}${actionsHtml}</div>`;
+        const bodyHtml = msg.loading ? '正在输入 <span class="loading-dots"><span></span><span></span><span></span></span>' : formatMessageText(msg.text);
+        msgEl.innerHTML=`<div class="msg-ai">${bodyHtml}${timeStr?'<div class="msg-time">'+timeStr+'</div>':''}${actionsHtml}</div>`;
       }
       group.appendChild(msgEl);
     });
@@ -1883,9 +1967,11 @@ function renderChatHistory(){
 function addChatMessage(role, text, quick){
   const now=new Date();
   const timeStr=now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
-  const msg = {role, text, date:today(), time:timeStr, quick:quick||[]};
+  const msg = typeof text === 'object'
+    ? {role, text:text.text||'', date:today(), time:timeStr, quick:quick||text.quick||[], loading:!!text.loading}
+    : {role, text, date:today(), time:timeStr, quick:quick||[]};
   appData.chatHistory.push(msg);
-  if(appData.chatHistory.length>100) appData.chatHistory=appData.chatHistory.slice(-80);
+  if(appData.chatHistory.length>40) appData.chatHistory=appData.chatHistory.slice(-30);
   saveData(appData, true);
   renderChatHistory();
 }
@@ -2196,14 +2282,14 @@ async function sendAiQuery(){
   input.value='';
   resizeAiInput();
   addChatMessage('user',text);
-  addChatMessage('ai','<div class="loading-dots"><span></span><span></span><span></span></div>');
+  addChatMessage('ai',{text:'正在输入', loading:true});
   try{
     const result = await requestLocalAI({
       message:text,
       habits:appData.habits,
       checkins:appData.checkins,
       settings:appData.settings,
-      chatHistory:appData.chatHistory.filter(msg=>msg.text && !msg.text.includes('loading-dots')).slice(-10)
+      chatHistory:appData.chatHistory.filter(msg=>msg.role==='user' && msg.text && !msg.loading).slice(-6)
     });
     removeLoadingMessage();
     handleAIResult(result);
@@ -2228,8 +2314,15 @@ async function requestLocalAI(payload){
       body:JSON.stringify(payload)
     });
     clearTimeout(timeoutId);
-    if(response.status===401){showLogin();throw new Error('请先登录');}
-    if(!response.ok)throw new Error('AI服务暂时不可用');
+    if(response.status===401){showLogin();throw new Error('401 请先登录');}
+    if(!response.ok){
+      let message = 'AI服务暂时不可用';
+      try{
+        const result = await response.json();
+        message = result.message || result.reply || message;
+      }catch(e){}
+      throw new Error(`${response.status} ${message}`);
+    }
     return await response.json();
   }catch(e){
     clearTimeout(timeoutId);
@@ -2238,9 +2331,8 @@ async function requestLocalAI(payload){
 }
 
 function removeLoadingMessage(){
-  const idx = appData.chatHistory.map(msg=>msg.text||'').lastIndexOf('<div class="loading-dots"><span></span><span></span><span></span></div>');
+  const idx = appData.chatHistory.map(msg=>!!msg.loading).lastIndexOf(true);
   if(idx>=0)appData.chatHistory.splice(idx,1);
-  else appData.chatHistory.pop();
   saveData(appData, true);
 }
 
@@ -2595,8 +2687,11 @@ const AIEngine = {
 // v13：语气选择辅助函数 - 根据AI语气设置返回不同风格的回复
 // sassy(mildMsgs, sassyMsgs, tone) - mildMsgs为数组时随机选一条，为字符串时直接返回
 function sassy(mild, sassy, tone){
-  if(tone==='sassy') return Array.isArray(sassy)?sassy[Math.floor(Math.random()*sassy.length)]:sassy;
-  return Array.isArray(mild)?mild[Math.floor(Math.random()*mild.length)]:mild;
+  const pick = value => Array.isArray(value) ? value[Math.floor(Math.random()*value.length)] : value;
+  if(tone==='sassy') return pick(sassy);
+  const text = pick(mild);
+  if(tone==='mild') return text.replace(/[？！!]/g,'。').replace(/偷懒|犯懒|拖到明天|找借口/g,'先从一小步开始');
+  return text + '\n\n我会盯着进度，别让计划只停在嘴上。';
 }
 
 function sendQuick(text){
@@ -2608,11 +2703,17 @@ function sendQuick(text){
 // v13：AI语气设置
 function setAiTone(tone){
   appData.settings.aiTone=tone;
+  appData.chatHistory=[];
   saveData(appData,true);
   document.querySelectorAll('.tone-option').forEach(function(el){el.classList.remove('active');});
   document.querySelector('.tone-option[data-tone="'+tone+'"]').classList.add('active');
   showToast('教练语气已切换');
   renderAiAdvice();
+  if(currentPage==='assistant')renderAssistantPage();
+  if(currentPage==='assistant'){
+    const preview = tone==='sassy' ? '毒舌模式已开启。接下来我会更直接一点，别又把计划供起来不做。' : tone==='mild' ? '温和模式已开启。接下来我会更鼓励你，先从一小步开始。' : '默认模式已开启。接下来我会直接提醒，适度调侃。';
+    addChatMessage('ai', preview);
+  }
 }
 window.setAiTone=setAiTone;
 window.toggleAiInputMode=toggleAiInputMode;
