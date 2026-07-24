@@ -1,0 +1,20 @@
+<view class="wrap">
+  <view class="logo">✓</view>
+  <view class="title">AI成长助理</view>
+
+  <block wx:if="{{mode === 'claim'}}">
+    <view class="sub">输入旧账号用户名/密码，一键把历史数据迁到当前微信</view>
+    <input class="input-field" placeholder="用户名（如 admin / test1）" value="{{username}}" bindinput="onUsernameInput" maxlength="30"/>
+    <input class="input-field" placeholder="密码" password value="{{password}}" bindinput="onPasswordInput" maxlength="50"/>
+    <view class="msg error" wx:if="{{errorMsg}}">{{errorMsg}}</view>
+    <view class="btn {{loading?'disabled':''}}" bindtap="onClaim">{{loading ? '正在认领…' : '认领旧账号'}}</view>
+    <view class="btn ghost {{loading?'disabled':''}}" bindtap="onSwitchFresh">从空账号开始</view>
+  </block>
+
+  <block wx:elif="{{mode === 'fresh'}}">
+    <view class="sub">创建一个全新的空账号，从零开始建习惯</view>
+    <view class="msg error" wx:if="{{errorMsg}}">{{errorMsg}}</view>
+    <view class="btn {{loading?'disabled':''}}" bindtap="onStartFresh">{{loading ? '正在创建…' : '立即开始'}}</view>
+    <view class="btn ghost {{loading?'disabled':''}}" bindtap="onSwitchClaim">返回认领旧账号</view>
+  </block>
+</view>

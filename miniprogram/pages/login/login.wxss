@@ -1,0 +1,12 @@
+.wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60rpx;box-sizing:border-box}
+.logo{width:120rpx;height:120rpx;border-radius:36rpx;background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);color:#fff;font-size:64rpx;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 16rpx 48rpx rgba(99,102,241,0.35)}
+.title{font-size:44rpx;font-weight:900;color:#1e293b;margin-top:36rpx}
+.sub{font-size:26rpx;color:#64748b;margin-top:16rpx;text-align:center;line-height:1.6}
+.btn{width:100%;height:96rpx;line-height:96rpx;text-align:center;border-radius:28rpx;background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);color:#fff;font-size:32rpx;font-weight:800;margin-top:60rpx;border:none}
+.btn.ghost{background:#fff;color:#6366f1;border:2rpx solid #6366f1;margin-top:24rpx}
+.btn.disabled{opacity:0.6}
+.msg{font-size:30rpx;color:#64748b;margin-top:48rpx;text-align:center;font-weight:600}
+.msg.success{color:#10b981}
+.msg.error{color:#ef4444}
+.input-field{width:100%;height:96rpx;padding:0 32rpx;border:4rpx solid #e2e8f0;border-radius:28rpx;font-size:30rpx;background:#fff;box-sizing:border-box;margin-top:32rpx;font-weight:500}
+.input-field:focus{border-color:#6366f1}

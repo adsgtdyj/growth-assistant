@@ -1,0 +1,22 @@
+<template name="tabbar">
+  <view class="tab-bar">
+    <view class="tab-item {{active==='index'?'active':''}}" data-tab="index" bindtap="onTab">
+      <view class="tab-icon check"></view><text>今日</text>
+    </view>
+    <view class="tab-item {{active==='calendar'?'active':''}}" data-tab="calendar" bindtap="onTab">
+      <view class="tab-icon calendar"></view><text>日历</text>
+    </view>
+    <view class="tab-item coach-tab {{active==='assistant'?'active':''}}" data-tab="assistant" bindtap="onTab">
+      <view class="coach-circle">
+        <view class="coach-icon"></view>
+        <text class="coach-label">教练</text>
+      </view>
+    </view>
+    <view class="tab-item {{active==='analytics'?'active':''}}" data-tab="analytics" bindtap="onTab">
+      <view class="tab-icon chart"></view><text>分析</text>
+    </view>
+    <view class="tab-item {{active==='stats'?'active':''}}" data-tab="stats" bindtap="onTab">
+      <view class="tab-icon user"></view><text>我的</text>
+    </view>
+  </view>
+</template>

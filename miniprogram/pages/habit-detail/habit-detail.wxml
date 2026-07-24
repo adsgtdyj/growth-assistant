@@ -1,0 +1,100 @@
+<view class="page">
+  <view class="status-pad" style="height:{{statusH}}"></view>
+  <view class="nav-bar">
+    <view class="nav-back" bindtap="onBack">‹</view>
+    <view class="nav-title">
+      <view class="nav-icon" style="background:linear-gradient(135deg,{{habit.color}}22,{{habit.color}}38)">{{habitIcon}}</view>
+      <text class="nav-name">{{habit.name}}</text>
+    </view>
+    <view class="nav-action" bindtap="onEditHabit">✎</view>
+  </view>
+
+  <view class="main-area">
+    <view class="detail-page">
+      <view class="detail-hero">
+        <view class="streak-num">{{streak}}</view>
+        <view class="streak-label">天连续打卡</view>
+      </view>
+
+      <view class="detail-data">
+        <view class="data-title">数据统计</view>
+        <view class="data-row"><text class="data-label">累计打卡</text><text class="data-value">{{total}} 天</text></view>
+        <view class="data-row"><text class="data-label">当前连胜</text><text class="data-value">{{streak}} 天</text></view>
+        <view class="data-row"><text class="data-label">最长连续</text><text class="data-value">{{maxStreak}} 天</text></view>
+        <view class="data-row"><text class="data-label">本月完成</text><text class="data-value">{{monthCheckins}}/{{daysInMonth}} ({{monthRate}}%)</text></view>
+        <view class="data-row"><text class="data-label">总完成率</text><text class="data-value">{{totalRate}}%</text></view>
+      </view>
+
+      <view class="detail-records">
+        <view class="records-title">本月打卡日历</view>
+        <view class="dcal-header">
+          <view class="dcal-nav" bindtap="prevMonth">‹</view>
+          <view class="dcal-title">{{calTitle}}</view>
+          <view class="dcal-nav" bindtap="nextMonth">›</view>
+        </view>
+
+        <view class="cal-weekdays">
+          <text>日</text><text>一</text><text>二</text><text>三</text><text>四</text><text>五</text><text>六</text>
+        </view>
+        <view class="cal-days">
+          <view
+            wx:for="{{days}}"
+            wx:key="index"
+            class="cal-day {{item.isEmpty ? 'empty' : ''}} level{{item.level}} {{item.isToday ? 'today' : ''}} {{item.hasNote ? 'has-note' : ''}} {{item.dateStr === noteDate ? 'selected' : ''}}"
+            data-date="{{item.dateStr}}"
+            bindtap="onDayTap">{{item.day}}</view>
+        </view>
+
+        <view class="detail-cal-note" wx:if="{{noteVisible}}">
+          <view class="dcn-date">{{noteDateLabel}}</view>
+          <view class="dcn-content">
+            <block wx:if="{{noteCheckins.length > 0}}">
+              <view class="dcn-item" wx:for="{{noteCheckins}}" wx:key="id">
+                <view class="dcn-item-body">
+                  <text class="dcn-note">{{item.note}}</text>
+                  <text class="dcn-time" wx:if="{{item.time}}">{{item.time}}</text>
+                  <text class="dcn-tag" wx:if="{{item.isMakeup}}">补签</text>
+                </view>
+                <view class="dcn-item-actions">
+                  <view class="dcn-edit" data-id="{{item.id}}" bindtap="onEditNote">编辑</view>
+                  <view class="dcn-del" data-id="{{item.id}}" bindtap="onDeleteCheckin">删除</view>
+                </view>
+              </view>
+            </block>
+            <view class="dcn-empty" wx:else>该日暂无打卡记录</view>
+            <view class="dcn-action">
+              <view wx:if="{{canTodayCheckin}}" class="dcn-btn" bindtap="onTodayCheckin">今日打卡</view>
+              <view wx:if="{{canMakeup}}" class="dcn-btn" bindtap="onMakeup">补签</view>
+            </view>
+          </view>
+        </view>
+
+        <view class="cal-legend">
+          <text>少</text>
+          <view class="legend-block l0"></view>
+          <view class="legend-block l1"></view>
+          <view class="legend-block l2"></view>
+          <view class="legend-block l3"></view>
+          <text>多</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 补签弹窗 -->
+  <view class="modal-overlay" wx:if="{{makeupVisible}}" bindtap="onMakeupCancel">
+    <view class="makeup-sheet" catchtap="">
+      <view class="sheet-handle"></view>
+      <view class="sheet-title">补签打卡</view>
+      <view class="sheet-desc">为「{{habit.name}}」补一条 {{makeupDate}} 的打卡记录。</view>
+      <view class="makeup-label">补签日期</view>
+      <picker mode="date" value="{{makeupDate}}" bindchange="onMakeupDateChange" class="date-picker">
+        <view class="date-value">{{makeupDate || '请选择日期'}}</view>
+      </picker>
+      <view class="makeup-label">备注内容</view>
+      <textarea class="note-input" value="{{makeupNote}}" bindinput="onMakeupNoteInput" placeholder="例如：今天补记录训练内容、阅读页数或完成情况" maxlength="120" auto-height></textarea>
+      <view class="btn-confirm" bindtap="onMakeupConfirm">确认补签</view>
+      <view class="btn-cancel" bindtap="onMakeupCancel">取消</view>
+    </view>
+  </view>
+</view>

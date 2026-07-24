@@ -1,0 +1,43 @@
+.form-page{padding:32rpx 40rpx 120rpx;background:linear-gradient(180deg,#f8fafc,#f1f5f9);min-height:100vh;box-sizing:border-box}
+.form-group{margin-bottom:40rpx}
+.form-label{font-size:26rpx;font-weight:800;color:#64748b;margin-bottom:16rpx;letter-spacing:1rpx}
+.form-input{width:100%;height:88rpx;padding:0 32rpx;border:4rpx solid #e2e8f0;border-radius:24rpx;font-size:30rpx;background:#fff;box-sizing:border-box;font-weight:500}
+
+/* 图标网格 */
+.icon-grid{display:flex;flex-wrap:wrap;gap:16rpx}
+.icon-item{width:100rpx;height:100rpx;border-radius:28rpx;border:4rpx solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-size:40rpx;background:#fff}
+.icon-item.selected{box-shadow:0 8rpx 24rpx rgba(99,102,241,0.3)}
+
+/* 颜色网格 */
+.color-grid{display:flex;flex-wrap:wrap;gap:16rpx}
+.color-item{width:64rpx;height:64rpx;border-radius:20rpx;border:6rpx solid #fff;box-shadow:0 0 0 4rpx #e2e8f0}
+.color-item.selected{transform:scale(1.1)}
+
+/* 频率 */
+.freq-row{display:flex;gap:16rpx}
+.freq-chip{flex:1;height:80rpx;border-radius:24rpx;border:4rpx solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-size:28rpx;font-weight:700;color:#64748b;background:#fff}
+.freq-chip.active{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-color:transparent}
+
+.weekday-row{display:none;gap:12rpx;margin-top:16rpx}
+.weekday-row.show{display:flex}
+.weekday-chip{flex:1;height:72rpx;border-radius:20rpx;border:4rpx solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-size:26rpx;font-weight:700;color:#94a3b8;background:#fff}
+.weekday-chip.active{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-color:transparent}
+
+/* 计划项 */
+.plan-item{display:flex;align-items:center;gap:16rpx;margin-bottom:16rpx}
+.plan-color{width:40rpx;height:40rpx;border-radius:12rpx;flex-shrink:0}
+.plan-input{flex:1;height:72rpx;padding:0 24rpx;border:4rpx solid #e2e8f0;border-radius:18rpx;font-size:28rpx;background:#fff}
+.plan-del{width:48rpx;height:48rpx;border-radius:50%;background:rgba(239,68,68,0.1);color:#ef4444;font-size:32rpx;font-weight:700;display:flex;align-items:center;justify-content:center}
+.plan-add{height:72rpx;border:4rpx dashed #cbd5e1;border-radius:18rpx;display:flex;align-items:center;justify-content:center;font-size:28rpx;color:#94a3b8;font-weight:700}
+
+/* 保存 */
+.save-btn{width:100%;height:96rpx;border-radius:28rpx;background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);color:#fff;font-size:32rpx;font-weight:800;border:none;box-shadow:0 16rpx 48rpx rgba(99,102,241,0.35)}
+
+/* 提醒时间 picker */
+.reminder-row{display:flex;align-items:center;gap:16rpx}
+.reminder-picker{flex:1}
+.reminder-pick-box{height:88rpx;padding:0 24rpx;border:4rpx solid #e2e8f0;border-radius:18rpx;background:#fff;display:flex;align-items:center;font-size:30rpx;color:#1e293b;font-weight:700}
+.reminder-pick-box.filled{border-color:#6366f1;color:#6366f1}
+.reminder-placeholder{color:#94a3b8;font-weight:500}
+.reminder-caret{margin-left:auto;color:#cbd5e1;font-size:36rpx}
+.reminder-clear{padding:0 24rpx;height:88rpx;border-radius:18rpx;background:rgba(239,68,68,0.08);color:#ef4444;font-size:26rpx;font-weight:700;display:flex;align-items:center}

@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "openapi": [
+      "subscribeMessage.send"
+    ]
+  },
+  "timeout": 20,
+  "memorySize": 256,
+  "triggers": [
+    {
+      "name": "reminderTimer",
+      "type": "timer",
+      "config": "0 * * * * * *"
+    }
+  ]
+}

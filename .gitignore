@@ -40,3 +40,7 @@ data/
 # 系统文件
 .DS_Store
 Thumbs.db
+
+# 小程序 seedLegacy 云函数：包含真实用户历史数据，不进公开仓库
+miniprogram/cloudfunctions/seedLegacy/legacy-data.json
+miniprogram/cloudfunctions/seedLegacy/index.js
