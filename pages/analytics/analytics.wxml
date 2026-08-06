@@ -1,0 +1,109 @@
+<view class="page">
+  <view class="status-pad" style="height:{{statusH}}"></view>
+
+  <view class="main-area">
+    <view class="analytics-page">
+      <!-- 头部 -->
+      <view class="analytics-header">
+        <view class="header-title"><view class="ci chart"></view>数据看板</view>
+        <view class="header-sub">用数据驱动好习惯</view>
+      </view>
+
+      <!-- KPI 2x2 -->
+      <view class="kpi-row">
+        <view class="kpi-card">
+          <view class="kpi-num green">{{weekRate}}</view>
+          <view class="kpi-label">本周完成率</view>
+          <view class="kpi-trend" wx:if="{{weekTrend}}">{{weekTrend}}</view>
+        </view>
+        <view class="kpi-card">
+          <view class="kpi-num orange">{{longestStreak}}</view>
+          <view class="kpi-label">最长连续天数</view>
+          <view class="kpi-trend">累计 {{totalCheckins}} 次</view>
+        </view>
+        <view class="kpi-card">
+          <view class="kpi-num purple">{{totalCheckins}}</view>
+          <view class="kpi-label">累计打卡</view>
+          <view class="kpi-trend">本月 {{monthCheckins}} 次</view>
+        </view>
+        <view class="kpi-card">
+          <view class="kpi-num dark">{{activeHabits}}</view>
+          <view class="kpi-label">进行中习惯</view>
+          <view class="kpi-trend">{{activeHabits > 0 ? '全部活跃' : '暂无习惯'}}</view>
+        </view>
+      </view>
+
+      <!-- 近7天趋势 -->
+      <view class="chart-section">
+        <view class="chart-card chart-clickable" bindtap="onTrendTap">
+          <view class="chart-title"><view class="ci trend"></view>近7天打卡趋势<view class="chart-hint">点我看日历</view></view>
+          <view class="bar-chart">
+            <view class="bar-item" wx:for="{{weekDays}}" wx:key="index">
+              <view class="bar-val">{{item.count}}</view>
+              <view class="bar" style="height:{{item.pct || 4}}%"></view>
+              <view class="bar-label">{{item.label}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 完成率对比 -->
+      <view class="chart-section">
+        <view class="chart-card">
+          <view class="chart-title"><view class="ci target"></view>习惯完成率对比</view>
+          <view class="compare-row" wx:for="{{habitRates}}" wx:key="id" data-id="{{item.id}}" bindtap="onHabitDetail">
+            <view class="compare-left">
+              <view class="compare-icon" style="background:linear-gradient(135deg,{{item.color}}22,{{item.color}}38);box-shadow:inset 0 2rpx 0 rgba(255,255,255,0.7)">{{item.icon}}</view>
+              <view class="compare-name">{{item.name}}</view>
+            </view>
+            <view class="compare-bar-wrap"><view class="compare-bar-fill" style="width:{{item.rate || 4}}%"></view></view>
+            <view class="compare-pct">{{item.pct}}</view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 完成项分布 -->
+      <view class="chart-section" wx:if="{{itemStats.length > 0}}">
+        <view class="chart-card">
+          <view class="chart-title"><view class="ci target"></view>完成项分布</view>
+          <view class="item-stat-block" wx:for="{{itemStats}}" wx:key="habitId">
+            <view class="item-stat-head">
+              <view class="item-stat-icon" style="background:linear-gradient(135deg,{{item.habitColor}}22,{{item.habitColor}}38)">{{item.habitIcon}}</view>
+              <text class="item-stat-name">{{item.habitName}}</text>
+              <text class="item-stat-total">{{item.total}} 次</text>
+            </view>
+            <view class="item-stat-list">
+              <view class="item-stat-row" wx:for="{{item.items}}" wx:for-item="si" wx:key="text">
+                <view class="item-stat-dot" style="background:{{si.color}}"></view>
+                <text class="item-stat-text">{{si.text}}</text>
+                <view class="item-stat-bar-wrap">
+                  <view class="item-stat-bar-fill" style="width:{{item.total > 0 ? (si.count / item.total * 100) : 0}}%"></view>
+                </view>
+                <text class="item-stat-count">{{si.count}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 智能洞察 -->
+      <view class="insight-card" wx:if="{{insights.length > 0}}">
+        <view class="insight-title"><view class="ci lightbulb"></view>智能洞察</view>
+        <view class="insight-item" wx:for="{{insights}}" wx:key="idx" wx:for-index="idx">
+          <view class="insight-icon">{{idx + 1}}</view>
+          <view class="insight-text"><text class="hl" wx:if="{{item.hl}}">{{item.hl}}</text>{{item.text}}</view>
+        </view>
+      </view>
+
+      <!-- 记录与计划引导 -->
+      <view class="analysis-guide">
+        <view class="analysis-guide-title"><view class="ci info"></view>记录和计划放轻一点</view>
+        <view class="analysis-guide-text">历史打卡记录建议去日历里按日期查看；训练安排、阅读计划这类问题，直接问教练会更灵活。</view>
+        <view class="analysis-guide-actions">
+          <view class="analysis-guide-btn" bindtap="onGoCalendar">看日历记录</view>
+          <view class="analysis-guide-btn primary" bindtap="onAskCoachPlan">问教练计划</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

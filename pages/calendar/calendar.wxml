@@ -1,0 +1,67 @@
+<view class="page">
+  <view class="status-pad" style="height:{{statusH}}"></view>
+  <view class="main-area">
+    <view class="cal-page">
+      <view class="cal-header">
+        <view class="month-nav" bindtap="prevMonth"><text>‹</text></view>
+        <view class="month-title">{{monthTitle}}</view>
+        <view class="month-nav" bindtap="nextMonth"><text>›</text></view>
+      </view>
+
+      <view class="cal-grid">
+        <view class="cal-weekdays">
+          <text>日</text><text>一</text><text>二</text><text>三</text><text>四</text><text>五</text><text>六</text>
+        </view>
+        <view class="cal-days">
+          <view
+            wx:for="{{days}}"
+            wx:key="index"
+            class="cal-day {{item.isEmpty ? 'empty' : ''}} level{{item.level}} {{item.isToday ? 'today' : ''}} {{item.hasNote ? 'has-note' : ''}} {{item.dateStr === selectedDate ? 'selected' : ''}}"
+            data-date="{{item.dateStr}}"
+            bindtap="onDayTap">{{item.day}}</view>
+        </view>
+      </view>
+
+      <view class="cal-stats">
+        <view class="stat-row">
+          <text class="stat-text">本月打卡</text>
+          <text class="stat-pct purple">{{totalCheckins}}/{{totalDays}} 天 ({{checkinRate}})</text>
+        </view>
+      </view>
+
+      <view class="cal-legend">
+        <text>少</text>
+        <view class="legend-block l0"></view>
+        <view class="legend-block l1"></view>
+        <view class="legend-block l2"></view>
+        <view class="legend-block l3"></view>
+        <text>多</text>
+      </view>
+
+      <!-- 详情面板 -->
+      <view class="day-detail-panel" wx:if="{{detailVisible}}">
+        <view class="day-detail-header">
+          <view class="day-detail-title">{{selectedDateLabel}}</view>
+          <view class="day-detail-close" bindtap="onCloseDetail">✕</view>
+        </view>
+        <view class="day-detail-list" wx:if="{{detailCheckins.length > 0}}">
+          <view class="day-detail-item" wx:for="{{detailCheckins}}" wx:key="id">
+            <view class="dd-icon" style="background:linear-gradient(135deg,{{item.habitColor}}22,{{item.habitColor}}38)">{{item.habitIcon}}</view>
+            <view class="dd-info">
+              <view class="dd-name">{{item.habitName}}</view>
+              <view class="dd-tags" wx:if="{{item.selectedItems.length > 0}}">
+                <view class="dd-tag" wx:for="{{item.selectedItems}}" wx:for-item="si" wx:key="text">
+                  <view class="dd-tag-dot" style="background:{{si.color}}"></view>
+                  <text>{{si.text}}</text>
+                </view>
+              </view>
+              <view class="dd-note" wx:if="{{item.note}}">{{item.note}}</view>
+            </view>
+            <view class="dd-time">{{item.time}}</view>
+          </view>
+        </view>
+        <view class="day-detail-empty" wx:else>该日暂无打卡记录</view>
+      </view>
+    </view>
+  </view>
+</view>

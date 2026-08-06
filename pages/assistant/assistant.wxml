@@ -1,0 +1,125 @@
+<view class="page">
+  <view class="status-pad" style="height:{{statusH}}"></view>
+
+  <view class="assistant-page">
+    <!-- 头部 -->
+    <view class="assistant-header">
+      <view class="ah-title">{{greeting}}</view>
+      <view class="ah-sub">今天还有 {{uncheckedCount}} 个习惯未打卡</view>
+      <view class="ah-row">
+        <view class="sync-status ok">云端同步：已连接</view>
+        <view class="tone-badge {{tone}}" bindtap="goToneSetting">语气：{{toneLabel}}</view>
+      </view>
+    </view>
+
+    <!-- 快捷操作 -->
+    <scroll-view class="quick-actions" scroll-x>
+      <view class="quick-pill" bindtap="onQuickAction" data-action="checkin">
+        <view class="pill-icon check"></view><text>快速打卡</text>
+      </view>
+      <view class="quick-pill" bindtap="onQuickAction" data-action="workout">
+        <view class="pill-icon mic-plan"></view><text>今天练什么</text>
+      </view>
+      <view class="quick-pill" bindtap="onQuickAction" data-action="week">
+        <view class="pill-icon bars"></view><text>我这周表现</text>
+      </view>
+      <view class="quick-pill" bindtap="onQuickAction" data-action="data">
+        <view class="pill-icon bars2"></view><text>我的数据</text>
+      </view>
+      <view class="quick-pill" bindtap="onQuickAction" data-action="plan">
+        <view class="pill-icon edit"></view><text>调整计划</text>
+      </view>
+    </scroll-view>
+
+    <view class="tone-tagline">{{toneTagline}}</view>
+
+    <!-- 对话区 -->
+    <scroll-view class="assistant-scroll" scroll-y
+      scroll-into-view="{{scrollTarget}}"
+      scroll-with-animation="{{true}}"
+      bindscroll="onChatScroll"
+      bindscrolltolower="onChatScrollToLower">
+      <view class="date-group-label">今天</view>
+
+      <!-- 欢迎态 -->
+      <view wx:if="{{messages.length === 0}}" class="msg-item">
+        <view class="msg-ai">
+          {{welcomeText}}
+          <view class="msg-time">{{greeting}}</view>
+        </view>
+      </view>
+
+      <!-- 消息列表 -->
+      <view wx:for="{{messages}}" wx:key="index" class="msg-item">
+        <view class="msg-user" wx:if="{{item.role === 'user'}}">
+          <view class="msg-avatar"></view>
+          <view class="msg-user-text">{{item.content}}</view>
+        </view>
+        <view class="msg-ai" wx:elif="{{item.role === 'assistant'}}">
+          {{item.content}}
+          <!-- 打字指示器 -->
+          <view wx:if="{{item.pending}}" class="typing-dots">
+            <view class="dot"></view><view class="dot"></view><view class="dot"></view>
+          </view>
+          <!-- Action 按钮 -->
+          <view class="msg-actions" wx:if="{{item.action}}">
+            <view class="msg-action-btn" wx:if="{{item.action.type === 'checkin'}}">已打卡</view>
+          </view>
+          <!-- 快捷回复 -->
+          <view class="msg-actions" wx:if="{{item.quickReplies && item.quickReplies.length > 0}}">
+            <view class="msg-action-btn" wx:for="{{item.quickReplies}}" wx:key="*this" wx:for-item="qr" data-text="{{qr}}" bindtap="onQuickReply">{{qr}}</view>
+          </view>
+          <view class="msg-time">{{item.time}}</view>
+        </view>
+      </view>
+
+      <view id="chatBottom"></view>
+    </scroll-view>
+
+    <!-- 输入栏 -->
+    <view class="ai-input-bar">
+      <view class="ai-input-row {{voiceMode ? 'voice-mode' : ''}}">
+        <!-- 模式切换按钮：文字模式=麦克风，语音模式=键盘 -->
+        <view wx:if="{{voiceEnabled}}" class="ai-mode-btn" bindtap="onToggleVoiceMode">
+          <view class="mode-icon {{voiceMode ? 'mode-icon-keyboard' : 'mode-icon-mic'}}"></view>
+        </view>
+        <!-- 文字输入 -->
+        <textarea wx:if="{{!voiceMode}}" class="ai-input ai-textarea"
+          style="height:{{inputHeight}}"
+          placeholder="问教练一句..."
+          value="{{inputValue}}"
+          bindinput="onInput"
+          bindlinechange="onLineChange"
+          maxlength="500"
+          show-confirm-bar="{{false}}"
+          adjust-position="{{true}}"
+          cursor-spacing="20"
+          disable-default-padding="{{true}}"
+          disabled="{{sending}}"></textarea>
+        <!-- 语音长按按钮 -->
+        <view wx:if="{{voiceMode}}" class="ai-voice-hold {{voiceRecording ? 'recording' : ''}} {{voiceCancel ? 'canceling' : ''}}"
+          bindtouchstart="onVoiceStart"
+          bindtouchmove="onVoiceMove"
+          bindtouchend="onVoiceEnd"
+          bindtouchcancel="onVoiceCancel">{{voiceHoldText}}</view>
+        <!-- 发送按钮（仅文字模式） -->
+        <view wx:if="{{!voiceMode}}" class="ai-send-btn" bindtap="onSend"><view class="send-icon"></view></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 语音录制全屏遮罩 -->
+  <view class="voice-overlay" wx:if="{{voiceRecording}}">
+    <view class="voice-inner {{voiceCancel ? 'cancel' : ''}}">
+      <view class="voice-wave">
+        <view class="wave-bar"></view>
+        <view class="wave-bar"></view>
+        <view class="wave-bar"></view>
+        <view class="wave-bar"></view>
+        <view class="wave-bar"></view>
+      </view>
+      <view class="voice-timer">{{voiceElapsed}}s</view>
+      <view class="voice-tip">{{voiceCancel ? '松开取消' : '松开发送 · 上滑取消'}}</view>
+    </view>
+  </view>
+</view>

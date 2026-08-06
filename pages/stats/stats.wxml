@@ -1,0 +1,103 @@
+<view class="page">
+  <view class="status-pad" style="height:{{statusH}}"></view>
+
+  <view class="main-area">
+    <view class="profile-page">
+      <!-- 头部 -->
+      <view class="profile-header">
+        <view class="avatar {{avatarIsImage ? 'has-img' : ''}}">
+          <image wx:if="{{avatarIsImage}}" src="{{avatar}}" mode="aspectFill" class="avatar-img"></image>
+          <view wx:else class="ic"></view>
+        </view>
+        <view class="profile-info">
+          <view class="nickname">{{nickname}}</view>
+          <view class="subtitle">{{slogan}}</view>
+        </view>
+        <view class="edit-profile-btn" bindtap="openEditProfile"><view class="ic"></view></view>
+      </view>
+
+      <!-- 我的习惯 -->
+      <view class="my-habits">
+        <view class="section-head"><view class="si list"></view>我的习惯</view>
+        <view class="habit-row" wx:for="{{habits}}" wx:key="id">
+          <view class="habit-info">
+            <view class="habit-icon-wrap" style="background:linear-gradient(135deg,{{item.color}}22,{{item.color}}38);box-shadow:inset 0 2rpx 0 rgba(255,255,255,0.7),0 6rpx 16rpx {{item.color}}2e">{{item.iconEmoji}}</view>
+            <view>
+              <view class="habit-name">{{item.name}}</view>
+              <view class="habit-meta">{{item.freqText}}{{item.reminder ? ' · ' + item.reminder + ' 提醒' : ''}}</view>
+            </view>
+          </view>
+          <view class="habit-actions">
+            <text class="habit-streak">🔥 {{item.streak}}</text>
+            <view class="habit-edit" bindtap="onEditHabit" data-id="{{item.id}}">编辑</view>
+            <view class="habit-del" bindtap="onDeleteHabit" data-id="{{item.id}}">删除</view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 教练语气强度 -->
+      <view class="settings-section">
+        <view class="section-head"><view class="si bot"></view>教练语气强度</view>
+        <view class="tone-selector">
+          <view class="tone-option mild {{tone==='mild'?'active':''}}" data-tone="mild" bindtap="onTone"><view class="ti"></view>温和</view>
+          <view class="tone-option normal {{tone==='normal'?'active':''}}" data-tone="normal" bindtap="onTone"><view class="ti"></view>默认</view>
+          <view class="tone-option sassy {{tone==='sassy'?'active':''}}" data-tone="sassy" bindtap="onTone"><view class="ti"></view>毒舌</view>
+        </view>
+      </view>
+
+      <!-- 设置 -->
+      <view class="settings-section">
+        <view class="section-head"><view class="si settings"></view>设置</view>
+        <view class="setting-item" bindtap="onExportData"><view class="label"><view class="si upload"></view>导出数据</view><view class="arrow">›</view></view>
+        <view class="setting-item" bindtap="onImportData"><view class="label"><view class="si download"></view>导入数据</view><view class="arrow">›</view></view>
+        <view class="setting-item" bindtap="onClearData"><view class="label" style="color:#ef4444"><view class="si trash"></view>清除所有数据</view><view class="arrow">›</view></view>
+        <view class="setting-item" bindtap="onAbout"><view class="label"><view class="si info"></view>关于 v13</view><view class="arrow">›</view></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 编辑资料弹窗 -->
+  <view class="edit-profile-overlay" wx:if="{{editVisible}}" bindtap="closeEditProfile">
+    <view class="edit-profile-modal" catchtap="_noopTap">
+      <view class="epm-title">编辑资料</view>
+
+      <scroll-view class="epm-body" scroll-y enhanced show-scrollbar="{{false}}">
+        <view class="form-group">
+          <view class="form-label">头像</view>
+          <view class="avatar-upload-area" bindtap="onChooseAvatar">
+            <view class="avatar-preview {{editAvatarIsImage ? 'has-img' : ''}}">
+              <image wx:if="{{editAvatarIsImage}}" src="{{editAvatar}}" mode="aspectFill" class="avatar-img"></image>
+              <view wx:else class="ic"></view>
+            </view>
+            <view class="avatar-upload-tip">点击更换头像</view>
+          </view>
+        </view>
+
+        <view class="form-group">
+          <view class="form-label">账号</view>
+          <view class="account-display">
+            <text class="acc-name">{{accountName}}</text>
+            <text class="acc-openid" wx:if="{{accountOpenid}}">{{accountOpenid}}</text>
+          </view>
+        </view>
+
+        <view class="form-group">
+          <view class="form-label">昵称</view>
+          <input class="form-input" value="{{editNickname}}" bindinput="onEditNickname" placeholder="请输入昵称" maxlength="20" />
+        </view>
+
+        <view class="form-group">
+          <view class="form-label">座右铭</view>
+          <input class="form-input" value="{{editSlogan}}" bindinput="onEditSlogan" placeholder="一句话激励自己" maxlength="40" />
+        </view>
+      </scroll-view>
+
+      <view class="epm-footer">
+        <view class="btn-row">
+          <view class="btn-cancel" bindtap="closeEditProfile">取消</view>
+          <view class="btn-save" bindtap="saveProfile">保存</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

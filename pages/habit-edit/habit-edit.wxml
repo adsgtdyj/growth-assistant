@@ -1,0 +1,67 @@
+<view class="form-page">
+  <!-- 名称 -->
+  <view class="form-group">
+    <view class="form-label">习惯名称</view>
+    <input class="form-input" placeholder="如：健身训练" value="{{name}}" bindinput="onNameInput" maxlength="20"/>
+  </view>
+
+  <!-- 图标 -->
+  <view class="form-group">
+    <view class="form-label">图标</view>
+    <view class="icon-grid">
+      <view class="icon-item {{icon===item.key?'selected':''}}" wx:for="{{icons}}" wx:key="key" data-key="{{item.key}}" bindtap="onIconTap"
+        style="{{icon===item.key ? 'border-color:'+color+';box-shadow:0 8rpx 24rpx '+color+'44' : ''}}">{{item.emoji}}</view>
+    </view>
+  </view>
+
+  <!-- 颜色 -->
+  <view class="form-group">
+    <view class="form-label">颜色</view>
+    <view class="color-grid">
+      <view class="color-item {{color===c?'selected':''}}" wx:for="{{colors}}" wx:for-item="c" wx:key="*this" data-color="{{c}}" bindtap="onColorTap"
+        style="background:{{c}};{{color===c ? 'box-shadow:0 0 0 6rpx '+c+',0 8rpx 24rpx '+c : ''}}"></view>
+    </view>
+  </view>
+
+  <!-- 频率 -->
+  <view class="form-group">
+    <view class="form-label">打卡频率</view>
+    <view class="freq-row">
+      <view class="freq-chip {{frequency==='daily'?'active':''}}" data-freq="daily" bindtap="onFreqTap">每天</view>
+      <view class="freq-chip {{frequency==='weekdays'?'active':''}}" data-freq="weekdays" bindtap="onFreqTap">工作日</view>
+      <view class="freq-chip {{frequency==='custom'?'active':''}}" data-freq="custom" bindtap="onFreqTap">自定义</view>
+    </view>
+    <view class="weekday-row {{frequency==='custom'?'show':''}}">
+      <view class="weekday-chip {{weekdays.indexOf(d+1)>-1?'active':''}}" wx:for="{{weekNames}}" wx:key="*this" wx:for-index="d" data-day="{{d+1}}" bindtap="onWeekdayTap">{{item}}</view>
+    </view>
+  </view>
+
+  <!-- 提醒时间 -->
+  <view class="form-group">
+    <view class="form-label">提醒时间（可选）</view>
+    <view class="reminder-row">
+      <picker mode="time" value="{{reminder || '20:00'}}" bindchange="onReminderChange" class="reminder-picker">
+        <view class="reminder-pick-box {{reminder ? 'filled' : ''}}">
+          <text wx:if="{{reminder}}">{{reminder}}</text>
+          <text wx:else class="reminder-placeholder">点击选择时间</text>
+          <text class="reminder-caret">›</text>
+        </view>
+      </picker>
+      <view wx:if="{{reminder}}" class="reminder-clear" bindtap="onReminderClear">清除</view>
+    </view>
+  </view>
+
+  <!-- 习惯计划 -->
+  <view class="form-group">
+    <view class="form-label">习惯计划（可选）</view>
+    <view class="plan-item" wx:for="{{planItems}}" wx:key="index">
+      <view class="plan-color" style="background:{{item.color}}" data-index="{{index}}" bindtap="onPlanColorTap"></view>
+      <input class="plan-input" placeholder="如：周一：上肢推" value="{{item.text}}" data-index="{{index}}" bindinput="onPlanItemInput" maxlength="20"/>
+      <view class="plan-del" data-index="{{index}}" bindtap="onRemovePlanItem">×</view>
+    </view>
+    <view class="plan-add" bindtap="onAddPlanItem">+ 添加计划项</view>
+  </view>
+
+  <!-- 保存 -->
+  <button class="save-btn" bindtap="onSave" loading="{{saving}}" disabled="{{saving}}">{{isEdit ? '保存修改' : '创建习惯'}}</button>
+</view>
